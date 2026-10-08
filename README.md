@@ -132,6 +132,9 @@ python3 -m pytest_evidence_runner run \
   --output-dir evidence/regression-v2
 ```
 
+Expected result: this command exits non-zero because version B intentionally
+introduces a failing test. The evidence report still writes successfully.
+
 Compare the results without rerunning tests:
 
 ```bash
@@ -140,6 +143,9 @@ python3 -m pytest_evidence_runner compare \
   --current evidence/regression-v2/report.json \
   --output-dir evidence/regression-comparison
 ```
+
+Expected result: this command exits non-zero when regressions are detected. The
+comparison report still writes successfully and can be exported.
 
 Representative comparison output:
 
