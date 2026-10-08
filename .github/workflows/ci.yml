@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package
+        run: python -m pip install -e .
+      - name: Run unit tests
+        run: python -m unittest discover -s tests
+      - name: Verify sample report generation
+        run: |
+          python -m pytest_evidence_runner run \
+            --workdir samples/unittest_project \
+            --output-dir evidence/ci-sample \
+            --hash "app/**/*.py" \
+            -- python -m unittest discover -s tests
+          test -s evidence/ci-sample/report.json
+          test -s evidence/ci-sample/report.md
+      - name: Verify Docker evidence workflow
+        if: matrix.python-version == '3.12'
+        run: |
+          set +e
+          python -m pytest_evidence_runner run \
+            --docker \
+            --project samples/pytest_project \
+            --output-dir evidence/ci-docker-sample
+          status=$?
+          set -e
+          test "$status" -ne 0
+          test -s evidence/ci-docker-sample/report.json
+          test -s evidence/ci-docker-sample/report.md
+          python - <<'PY'
+          import json
+          data = json.load(open("evidence/ci-docker-sample/report.json"))
+          assert data["execution_mode"] == "docker"
+          assert data["failure_kind"] == "test_failure"
+          assert data["test_session"]["failed"] == 1
+          PY

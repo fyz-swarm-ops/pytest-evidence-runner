@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Evidence Comparison Report</title>
+<style>
+body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 2rem; line-height: 1.45; color: #202124; }
+code, pre { background: #f5f7fa; border-radius: 4px; }
+pre { padding: 1rem; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th, td { border: 1px solid #d0d7de; padding: 0.45rem; text-align: left; vertical-align: top; }
+th { background: #f6f8fa; }
+details { border: 1px solid #d0d7de; border-radius: 6px; margin: 0.75rem 0; padding: 0.5rem 0.75rem; }
+summary { cursor: pointer; font-weight: 650; }
+.verdict { font-size: 1.15rem; font-weight: 700; }
+.bad { color: #b42318; }
+.good { color: #067647; }
+</style>
+</head>
+<body>
+<h1>Evidence Comparison Report</h1>
+<p class="verdict">Verdict: <span class="bad">regression</span></p>
+<h2>Executive Summary</h2>
+<table><tr><th>Baseline</th><td>run-25f5aad19194 (passed)</td></tr>
+<tr><th>Current</th><td>run-7165a5526699 (failed)</td></tr>
+<tr><th>Regressions</th><td>1</td></tr>
+<tr><th>Fixes</th><td>0</td></tr>
+<tr><th>Persistent failures</th><td>0</td></tr></table>
+<h2>Transitions</h2>
+<table><tr><th>Test id</th><th>Test</th><th>Baseline</th><th>Current</th><th>Transition</th><th>Performance</th></tr><tr><td><code>test-0a9e36bce22309e3</code></td><td>tests.test_calculator.test_multiplies_numbers</td><td>missing</td><td>passed</td><td>added</td><td>not_comparable</td></tr>
+<tr><td><code>test-3c2ad2c09a2a32d1</code></td><td>tests.test_calculator.test_normalizes_email</td><td>passed</td><td>passed</td><td>unchanged_passing</td><td>faster</td></tr>
+<tr><td><code>test-64dc442821f9f724</code></td><td>tests.test_calculator.test_adds_numbers</td><td>passed</td><td>passed</td><td>unchanged_passing</td><td>unchanged</td></tr>
+<tr><td><code>test-7fcf9195b9e086af</code></td><td>tests.test_calculator.test_divides_numbers</td><td>passed</td><td>failed</td><td>regression</td><td>unchanged</td></tr></table>
+<h2>Drilldown</h2>
+<details><summary><code>test-0a9e36bce22309e3</code> added</summary><pre>{
+  &quot;baseline_source&quot;: null,
+  &quot;baseline_status&quot;: null,
+  &quot;classification&quot;: &quot;added&quot;,
+  &quot;current_source&quot;: {
+    &quot;failure_ids&quot;: [],
+    &quot;session_id&quot;: &quot;session-pytest&quot;,
+    &quot;stderr_present&quot;: false,
+    &quot;stdout_present&quot;: false,
+    &quot;test_case_id&quot;: &quot;test-0a9e36bce22309e3&quot;
+  },
+  &quot;current_status&quot;: &quot;passed&quot;,
+  &quot;name&quot;: &quot;tests.test_calculator.test_multiplies_numbers&quot;,
+  &quot;performance&quot;: {
+    &quot;baseline_seconds&quot;: null,
+    &quot;classification&quot;: &quot;not_comparable&quot;,
+    &quot;current_seconds&quot;: null
+  },
+  &quot;test_id&quot;: &quot;test-0a9e36bce22309e3&quot;
+}</pre></details>
+<details><summary><code>test-3c2ad2c09a2a32d1</code> unchanged_passing</summary><pre>{
+  &quot;baseline_source&quot;: {
+    &quot;failure_ids&quot;: [],
+    &quot;session_id&quot;: &quot;session-pytest&quot;,
+    &quot;stderr_present&quot;: false,
+    &quot;stdout_present&quot;: false,
+    &quot;test_case_id&quot;: &quot;test-3c2ad2c09a2a32d1&quot;
+  },
+  &quot;baseline_status&quot;: &quot;passed&quot;,
+  &quot;classification&quot;: &quot;unchanged_passing&quot;,
+  &quot;current_source&quot;: {
+    &quot;failure_ids&quot;: [],
+    &quot;session_id&quot;: &quot;session-pytest&quot;,
+    &quot;stderr_present&quot;: false,
+    &quot;stdout_present&quot;: false,
+    &quot;test_case_id&quot;: &quot;test-3c2ad2c09a2a32d1&quot;
+  },
+  &quot;current_status&quot;: &quot;passed&quot;,
+  &quot;name&quot;: &quot;tests.test_calculator.test_normalizes_email&quot;,
+  &quot;performance&quot;: {
+    &quot;baseline_seconds&quot;: 0.001,
+    &quot;classification&quot;: &quot;faster&quot;,
+    &quot;current_seconds&quot;: 0.0,
+    &quot;delta_percent&quot;: -100.0,
+    &quot;delta_seconds&quot;: -0.001
+  },
+  &quot;test_id&quot;: &quot;test-3c2ad2c09a2a32d1&quot;
+}</pre></details>
+<details><summary><code>test-64dc442821f9f724</code> unchanged_passing</summary><pre>{
+  &quot;baseline_source&quot;: {
+    &quot;failure_ids&quot;: [],
+    &quot;session_id&quot;: &quot;session-pytest&quot;,
+    &quot;stderr_present&quot;: false,
+    &quot;stdout_present&quot;: false,
+    &quot;test_case_id&quot;: &quot;test-64dc442821f9f724&quot;
+  },
+  &quot;baseline_status&quot;: &quot;passed&quot;,
+  &quot;classification&quot;: &quot;unchanged_passing&quot;,
+  &quot;current_source&quot;: {
+    &quot;failure_ids&quot;: [],
+    &quot;session_id&quot;: &quot;session-pytest&quot;,
+    &quot;stderr_present&quot;: false,
+    &quot;stdout_present&quot;: false,
+    &quot;test_case_id&quot;: &quot;test-64dc442821f9f724&quot;
+  },
+  &quot;current_status&quot;: &quot;passed&quot;,
+  &quot;name&quot;: &quot;tests.test_calculator.test_adds_numbers&quot;,
+  &quot;performance&quot;: {
+    &quot;baseline_seconds&quot;: 0.001,
+    &quot;classification&quot;: &quot;unchanged&quot;,
+    &quot;current_seconds&quot;: 0.001,
+    &quot;delta_percent&quot;: 0.0,
+    &quot;delta_seconds&quot;: 0.0
+  },
+  &quot;test_id&quot;: &quot;test-64dc442821f9f724&quot;
+}</pre></details>
+<details><summary><code>test-7fcf9195b9e086af</code> regression</summary><pre>{
+  &quot;baseline_source&quot;: {
+    &quot;failure_ids&quot;: [],
+    &quot;session_id&quot;: &quot;session-pytest&quot;,
+    &quot;stderr_present&quot;: false,
+    &quot;stdout_present&quot;: false,
+    &quot;test_case_id&quot;: &quot;test-7fcf9195b9e086af&quot;
+  },
+  &quot;baseline_status&quot;: &quot;passed&quot;,
+  &quot;classification&quot;: &quot;regression&quot;,
+  &quot;current_source&quot;: {
+    &quot;failure_ids&quot;: [
+      &quot;failure-0001&quot;
+    ],
+    &quot;session_id&quot;: &quot;session-pytest&quot;,
+    &quot;stderr_present&quot;: false,
+    &quot;stdout_present&quot;: false,
+    &quot;test_case_id&quot;: &quot;test-7fcf9195b9e086af&quot;
+  },
+  &quot;current_status&quot;: &quot;failed&quot;,
+  &quot;name&quot;: &quot;tests.test_calculator.test_divides_numbers&quot;,
+  &quot;performance&quot;: {
+    &quot;baseline_seconds&quot;: 0.001,
+    &quot;classification&quot;: &quot;unchanged&quot;,
+    &quot;current_seconds&quot;: 0.001,
+    &quot;delta_percent&quot;: 0.0,
+    &quot;delta_seconds&quot;: 0.0
+  },
+  &quot;test_id&quot;: &quot;test-7fcf9195b9e086af&quot;
+}</pre></details>
+</body>
+</html>

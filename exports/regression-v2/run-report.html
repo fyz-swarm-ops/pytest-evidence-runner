@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Verification Report</title>
+<style>
+body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 2rem; line-height: 1.45; color: #202124; }
+code, pre { background: #f5f7fa; border-radius: 4px; }
+pre { padding: 1rem; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th, td { border: 1px solid #d0d7de; padding: 0.45rem; text-align: left; vertical-align: top; }
+th { background: #f6f8fa; }
+details { border: 1px solid #d0d7de; border-radius: 6px; margin: 0.75rem 0; padding: 0.5rem 0.75rem; }
+summary { cursor: pointer; font-weight: 650; }
+.verdict { font-size: 1.15rem; font-weight: 700; }
+.bad { color: #b42318; }
+.good { color: #067647; }
+</style>
+</head>
+<body>
+<h1>Verification Report</h1>
+<p class="verdict">Verdict: <span class="bad">failed</span></p>
+<p>Pytest completed in Docker with 1 failed and 0 errored tests.</p>
+<h2>Executive Summary</h2>
+<table><tr><th>Run id</th><td>run-7165a5526699</td></tr>
+<tr><th>Execution mode</th><td>docker</td></tr>
+<tr><th>Exit code</th><td>1</td></tr>
+<tr><th>Tests</th><td>4 total, 3 passed, 1 failed, 0 errors</td></tr></table>
+<h2>Test Cases</h2>
+<details><summary><code>test-64dc442821f9f724</code> passed tests.test_calculator.test_adds_numbers</summary><p>Duration: 0.001 seconds</p><p>Failures: none</p><pre></pre></details>
+<details><summary><code>test-7fcf9195b9e086af</code> failed tests.test_calculator.test_divides_numbers</summary><p>Duration: 0.001 seconds</p><p>Failures: failure-0001</p><pre></pre></details>
+<details><summary><code>test-3c2ad2c09a2a32d1</code> passed tests.test_calculator.test_normalizes_email</summary><p>Duration: 0.0 seconds</p><p>Failures: none</p><pre></pre></details>
+<details><summary><code>test-0a9e36bce22309e3</code> passed tests.test_calculator.test_multiplies_numbers</summary><p>Duration: 0.0 seconds</p><p>Failures: none</p><pre></pre></details>
+<h2>Failures</h2>
+<details open><summary><code>failure-0001</code> failure</summary><p>assert 2.6666666666666665 == 4
+ +  where 2.6666666666666665 = divide(8, 2)</p><pre>def test_divides_numbers():
+&gt;       assert divide(8, 2) == 4
+E       assert 2.6666666666666665 == 4
+E        +  where 2.6666666666666665 = divide(8, 2)
+
+tests/test_calculator.py:9: AssertionError</pre></details>
+<h2>Evidence References</h2>
+<pre>{
+  &quot;logs&quot;: [
+    {
+      &quot;content&quot;: &quot;.F..                                                                     [100%]\n=================================== FAILURES ===================================\n_____________________________ test_divides_numbers _____________________________\n\n    def test_divides_numbers():\n&gt;       assert divide(8, 2) == 4\nE       assert 2.6666666666666665 == 4\nE        +  where 2.6666666666666665 = divide(8, 2)\n\ntests/test_calculator.py:9: AssertionError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: &#x27;/workspace/pytest-cache-files-6kggoy82&#x27;\n    config.cache.set(\&quot;cache/nodeids\&quot;, sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: &#x27;/workspace/pytest-cache-files-hcvkcudu&#x27;\n    config.cache.set(\&quot;cache/lastfailed\&quot;, self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n-------------- generated xml file: /evidence/raw/pytest-junit.xml --------------\n=========================== short test summary info ============================\nFAILED tests/test_calculator.py::test_divides_numbers - assert 2.666666666666...\n1 failed, 3 passed, 2 warnings in 0.07s\n&quot;,
+      &quot;id&quot;: &quot;log-stdout&quot;,
+      &quot;path&quot;: &quot;docker-run.stdout.log&quot;,
+      &quot;sha256&quot;: &quot;f27fedba601dfca1f20015eccdf08792017006b7c5d5f2dd7ed8501ac6ee78b5&quot;,
+      &quot;size_bytes&quot;: 1625,
+      &quot;stream&quot;: &quot;stdout&quot;
+    },
+    {
+      &quot;content&quot;: &quot;&quot;,
+      &quot;id&quot;: &quot;log-stderr&quot;,
+      &quot;path&quot;: &quot;docker-run.stderr.log&quot;,
+      &quot;sha256&quot;: &quot;e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&quot;,
+      &quot;size_bytes&quot;: 0,
+      &quot;stream&quot;: &quot;stderr&quot;
+    }
+  ],
+  &quot;artifacts&quot;: [
+    {
+      &quot;path&quot;: &quot;raw/docker-command.json&quot;,
+      &quot;sha256&quot;: &quot;5471ff0f50a8cc5ed56b22929a7fabfbfe5c15a2dfbd9222cf330f582624edd2&quot;,
+      &quot;size_bytes&quot;: 824
+    },
+    {
+      &quot;path&quot;: &quot;raw/docker-config/config.json&quot;,
+      &quot;sha256&quot;: &quot;81bcbd3f950f2b31b87a64e8eca0de39db52feb0060d2bc631d7d794696604eb&quot;,
+      &quot;size_bytes&quot;: 13
+    },
+    {
+      &quot;path&quot;: &quot;raw/docker-run.stderr.log&quot;,
+      &quot;sha256&quot;: &quot;e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&quot;,
+      &quot;size_bytes&quot;: 0
+    },
+    {
+      &quot;path&quot;: &quot;raw/docker-run.stdout.log&quot;,
+      &quot;sha256&quot;: &quot;f27fedba601dfca1f20015eccdf08792017006b7c5d5f2dd7ed8501ac6ee78b5&quot;,
+      &quot;size_bytes&quot;: 1625
+    },
+    {
+      &quot;path&quot;: &quot;raw/pytest-junit.xml&quot;,
+      &quot;sha256&quot;: &quot;6a2461532ed22f0cea7bec13707f1a1da58d40c7813420b595f7bac62da750b2&quot;,
+      &quot;size_bytes&quot;: 912
+    }
+  ],
+  &quot;reproduction&quot;: [
+    &quot;python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/regression_v2 --output-dir /workspace/pytest-evidence-runner/evidence/regression-v2-live&quot;,
+    &quot;docker run --name pytest-evidence-run-7165a5526699 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/regression_v2:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/regression-v2-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml&quot;
+  ]
+}</pre>
+</body>
+</html>

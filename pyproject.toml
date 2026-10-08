@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytest-evidence-runner"
+version = "0.1.0"
+description = "Run Python test commands and produce evidence-backed verification reports."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Joshua Backing" }]
+keywords = ["pytest", "verification", "qa", "docker", "evidence", "testing"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Testing",
+]
+dependencies = ["pytest>=8,<9"]
+
+[project.scripts]
+pytest-evidence = "pytest_evidence_runner.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,165 @@
+{
+  "artifacts": [
+    {
+      "path": "raw/docker-command.json",
+      "sha256": "4fae4ebdf8a7639d1da4c96eb909c56fc666a9982901a24e6ff89953b50421a3",
+      "size_bytes": 824
+    },
+    {
+      "path": "raw/docker-config/config.json",
+      "sha256": "81bcbd3f950f2b31b87a64e8eca0de39db52feb0060d2bc631d7d794696604eb",
+      "size_bytes": 13
+    },
+    {
+      "path": "raw/docker-run.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "raw/docker-run.stdout.log",
+      "sha256": "6b3ead40de3206d13905e2e72ece435fcd3cea3eb8298b8b887ced9c6aabd85d",
+      "size_bytes": 719
+    },
+    {
+      "path": "raw/pytest-junit.xml",
+      "sha256": "f74c69b14c80729816014c183109c5936c307865cee343560270a236af54d4a3",
+      "size_bytes": 507
+    }
+  ],
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "container": {
+    "docker_build_id": null,
+    "docker_version": "Docker version 27.4.0, build bde2b89",
+    "evidence_mount": "/workspace/pytest-evidence-runner/evidence/regression-v1-live:/evidence:rw",
+    "id": "pytest-evidence-run-25f5aad19194",
+    "image": "pytest-evidence-runner:local",
+    "image_id": "sha256:b6d5c479c8801982463040fd0be20262d6838417becc3950dc56c4a782e56569",
+    "network_disabled": true,
+    "privileged": false,
+    "project_mount": "/workspace/pytest-evidence-runner/samples/regression_v1:/workspace:ro",
+    "resources": {
+      "cpus": "1",
+      "memory": "512m",
+      "pids_limit": "256",
+      "tmpfs": "/tmp:rw,nosuid,nodev,size=128m"
+    }
+  },
+  "duration_seconds": 2.544,
+  "execution_mode": "docker",
+  "exit_code": 0,
+  "failure_kind": null,
+  "failures": [],
+  "file_hashes": [
+    {
+      "path": "app/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_bytes": 1
+    },
+    {
+      "path": "app/calculator.py",
+      "sha256": "c5f59719390511884cfdc2c07abf50b448b214f3233491276b5a1291445c62e4",
+      "size_bytes": 208
+    },
+    {
+      "path": "tests/test_calculator.py",
+      "sha256": "d41ab41e24cf8dfff0f9517f9379476747d4405437ab32c545b87b83562ddc6d",
+      "size_bytes": 271
+    }
+  ],
+  "finished_at": "2026-10-08T17:43:13.779148+00:00",
+  "logs": [
+    {
+      "content": "...                                                                      [100%]\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-1kwgjr9_'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n-------------- generated xml file: /evidence/raw/pytest-junit.xml --------------\n3 passed, 1 warning in 0.05s\n",
+      "id": "log-stdout",
+      "path": "docker-run.stdout.log",
+      "sha256": "6b3ead40de3206d13905e2e72ece435fcd3cea3eb8298b8b887ced9c6aabd85d",
+      "size_bytes": 719,
+      "stream": "stdout"
+    },
+    {
+      "content": "",
+      "id": "log-stderr",
+      "path": "docker-run.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "stream": "stderr"
+    }
+  ],
+  "metadata": null,
+  "reproduction": [
+    "python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/regression_v1 --output-dir /workspace/pytest-evidence-runner/evidence/regression-v1-live",
+    "docker run --name pytest-evidence-run-25f5aad19194 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/regression_v1:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/regression-v1-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml"
+  ],
+  "run_id": "run-25f5aad19194",
+  "schema_version": "1.0",
+  "started_at": "2026-10-08T17:43:11.235042+00:00",
+  "stderr": "",
+  "stdout": "...                                                                      [100%]\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-1kwgjr9_'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n-------------- generated xml file: /evidence/raw/pytest-junit.xml --------------\n3 passed, 1 warning in 0.05s\n",
+  "summary": "Pytest completed successfully in Docker.",
+  "test_cases": [
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.001,
+      "failure_ids": [],
+      "id": "test-64dc442821f9f724",
+      "name": "test_adds_numbers",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.001,
+      "failure_ids": [],
+      "id": "test-7fcf9195b9e086af",
+      "name": "test_divides_numbers",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.001,
+      "failure_ids": [],
+      "id": "test-3c2ad2c09a2a32d1",
+      "name": "test_normalizes_email",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "test_session": {
+    "command": [
+      "python",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "duration_seconds": 2.544,
+    "errors": 0,
+    "exit_code": 0,
+    "failed": 0,
+    "finished_at": "2026-10-08T17:43:13.779148+00:00",
+    "id": "session-pytest",
+    "passed": 3,
+    "skipped": 0,
+    "started_at": "2026-10-08T17:43:11.235042+00:00",
+    "status": "passed",
+    "test_case_ids": [
+      "test-64dc442821f9f724",
+      "test-7fcf9195b9e086af",
+      "test-3c2ad2c09a2a32d1"
+    ],
+    "total": 3
+  },
+  "verdict": "passed",
+  "workdir": "/workspace/pytest-evidence-runner/samples/regression_v1"
+}

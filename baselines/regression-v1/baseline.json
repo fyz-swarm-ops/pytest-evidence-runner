@@ -1,0 +1,9 @@
+{
+  "copied_report": "report.json",
+  "name": "regression-v1",
+  "saved_at": "2026-10-08T17:43:26.754100+00:00",
+  "schema_version": "1.0",
+  "source_report": "evidence/regression-v1-live/report.json",
+  "source_run_id": "run-25f5aad19194",
+  "source_verdict": "passed"
+}

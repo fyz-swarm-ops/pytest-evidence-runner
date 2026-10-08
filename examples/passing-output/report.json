@@ -1,0 +1,162 @@
+{
+  "artifacts": [
+    {
+      "path": "raw/docker-build.stderr.log",
+      "sha256": "5743a10e5df1ddec74ff37f96def7ea76fd92f75ebeb1e068d8647bdca161dd3",
+      "size_bytes": 995
+    },
+    {
+      "path": "raw/docker-build.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "raw/docker-command.json",
+      "sha256": "eb93fc32f012f985f502e23efc8cfa9a5d792d52ec8a8559b127aca34d368286",
+      "size_bytes": 930
+    },
+    {
+      "path": "raw/docker-run.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "raw/docker-run.stdout.log",
+      "sha256": "fa2123cf13741ec93a1a52a47333f57f7483109af68bd292a2ba35b91ee1297a",
+      "size_bytes": 719
+    },
+    {
+      "path": "raw/pytest-junit.xml",
+      "sha256": "83a12024c81ea19b726413cc258aefbc2dd83628cc10954589294777b3668d4b",
+      "size_bytes": 415
+    }
+  ],
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_calculator.py::test_add_passes",
+    "tests/test_calculator.py::test_divide_passes"
+  ],
+  "container": {
+    "docker_build_id": "5743a10e5df1",
+    "docker_version": "Docker version 27.4.0, build bde2b89",
+    "evidence_mount": "/workspace/pytest-evidence-runner/evidence/docker-passing-subset-live:/evidence:rw",
+    "id": "pytest-evidence-run-5df1fc44dd86",
+    "image": "pytest-evidence-runner:local",
+    "image_id": "sha256:eef206ef77923cb49c991246881e5d1e89b12533cf35daa7da7752273ec14c12",
+    "network_disabled": true,
+    "privileged": false,
+    "project_mount": "/workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro",
+    "resources": {
+      "cpus": "1",
+      "memory": "512m",
+      "pids_limit": "256",
+      "tmpfs": "/tmp:rw,nosuid,nodev,size=128m"
+    }
+  },
+  "duration_seconds": 3.376,
+  "execution_mode": "docker",
+  "exit_code": 0,
+  "failure_kind": null,
+  "failures": [],
+  "file_hashes": [
+    {
+      "path": "app/__init__.py",
+      "sha256": "5eb3945eef525473781ad9407fd015705d874746c0eb3d3b9f0acfc7d9e18ea9",
+      "size_bytes": 65
+    },
+    {
+      "path": "app/calculator.py",
+      "sha256": "8c573fde83318f6d8f81cd4243df1723cc9aae22c5caf827b40cd226eea91a81",
+      "size_bytes": 133
+    },
+    {
+      "path": "tests/test_calculator.py",
+      "sha256": "d7e588c30e182220cd27f2258326ece66d7f4e8d8422192357b1511d133e9f9f",
+      "size_bytes": 210
+    }
+  ],
+  "finished_at": "2026-10-08T17:29:24.732899+00:00",
+  "logs": [
+    {
+      "content": "..                                                                       [100%]\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-pc0bzxqb'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n-------------- generated xml file: /evidence/raw/pytest-junit.xml --------------\n2 passed, 1 warning in 0.04s\n",
+      "id": "log-stdout",
+      "path": "docker-run.stdout.log",
+      "sha256": "fa2123cf13741ec93a1a52a47333f57f7483109af68bd292a2ba35b91ee1297a",
+      "size_bytes": 719,
+      "stream": "stdout"
+    },
+    {
+      "content": "",
+      "id": "log-stderr",
+      "path": "docker-run.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "stream": "stderr"
+    }
+  ],
+  "metadata": null,
+  "reproduction": [
+    "python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/pytest_project --output-dir /workspace/pytest-evidence-runner/evidence/docker-passing-subset-live",
+    "docker run --name pytest-evidence-run-5df1fc44dd86 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/docker-passing-subset-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q tests/test_calculator.py::test_add_passes tests/test_calculator.py::test_divide_passes --junitxml=/evidence/raw/pytest-junit.xml"
+  ],
+  "run_id": "run-5df1fc44dd86",
+  "schema_version": "1.0",
+  "started_at": "2026-10-08T17:29:21.356842+00:00",
+  "stderr": "",
+  "stdout": "..                                                                       [100%]\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-pc0bzxqb'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n-------------- generated xml file: /evidence/raw/pytest-junit.xml --------------\n2 passed, 1 warning in 0.04s\n",
+  "summary": "Pytest completed successfully in Docker.",
+  "test_cases": [
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.001,
+      "failure_ids": [],
+      "id": "test-0001",
+      "name": "test_add_passes",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.0,
+      "failure_ids": [],
+      "id": "test-0002",
+      "name": "test_divide_passes",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "test_session": {
+    "command": [
+      "python",
+      "-m",
+      "pytest",
+      "-q",
+      "tests/test_calculator.py::test_add_passes",
+      "tests/test_calculator.py::test_divide_passes"
+    ],
+    "duration_seconds": 3.376,
+    "errors": 0,
+    "exit_code": 0,
+    "failed": 0,
+    "finished_at": "2026-10-08T17:29:24.732899+00:00",
+    "id": "session-pytest",
+    "passed": 2,
+    "skipped": 0,
+    "started_at": "2026-10-08T17:29:21.356842+00:00",
+    "status": "passed",
+    "test_case_ids": [
+      "test-0001",
+      "test-0002"
+    ],
+    "total": 2
+  },
+  "verdict": "passed",
+  "workdir": "/workspace/pytest-evidence-runner/samples/pytest_project"
+}

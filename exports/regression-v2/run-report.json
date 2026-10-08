@@ -1,0 +1,187 @@
+{
+  "artifacts": [
+    {
+      "path": "raw/docker-command.json",
+      "sha256": "5471ff0f50a8cc5ed56b22929a7fabfbfe5c15a2dfbd9222cf330f582624edd2",
+      "size_bytes": 824
+    },
+    {
+      "path": "raw/docker-config/config.json",
+      "sha256": "81bcbd3f950f2b31b87a64e8eca0de39db52feb0060d2bc631d7d794696604eb",
+      "size_bytes": 13
+    },
+    {
+      "path": "raw/docker-run.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "raw/docker-run.stdout.log",
+      "sha256": "f27fedba601dfca1f20015eccdf08792017006b7c5d5f2dd7ed8501ac6ee78b5",
+      "size_bytes": 1625
+    },
+    {
+      "path": "raw/pytest-junit.xml",
+      "sha256": "6a2461532ed22f0cea7bec13707f1a1da58d40c7813420b595f7bac62da750b2",
+      "size_bytes": 912
+    }
+  ],
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "container": {
+    "docker_build_id": null,
+    "docker_version": "Docker version 27.4.0, build bde2b89",
+    "evidence_mount": "/workspace/pytest-evidence-runner/evidence/regression-v2-live:/evidence:rw",
+    "id": "pytest-evidence-run-7165a5526699",
+    "image": "pytest-evidence-runner:local",
+    "image_id": "sha256:b6d5c479c8801982463040fd0be20262d6838417becc3950dc56c4a782e56569",
+    "network_disabled": true,
+    "privileged": false,
+    "project_mount": "/workspace/pytest-evidence-runner/samples/regression_v2:/workspace:ro",
+    "resources": {
+      "cpus": "1",
+      "memory": "512m",
+      "pids_limit": "256",
+      "tmpfs": "/tmp:rw,nosuid,nodev,size=128m"
+    }
+  },
+  "duration_seconds": 1.305,
+  "execution_mode": "docker",
+  "exit_code": 1,
+  "failure_kind": "test_failure",
+  "failures": [
+    {
+      "details": "def test_divides_numbers():\n>       assert divide(8, 2) == 4\nE       assert 2.6666666666666665 == 4\nE        +  where 2.6666666666666665 = divide(8, 2)\n\ntests/test_calculator.py:9: AssertionError",
+      "id": "failure-0001",
+      "kind": "failure",
+      "message": "assert 2.6666666666666665 == 4\n +  where 2.6666666666666665 = divide(8, 2)",
+      "test_case_id": "test-7fcf9195b9e086af"
+    }
+  ],
+  "file_hashes": [
+    {
+      "path": "app/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_bytes": 1
+    },
+    {
+      "path": "app/calculator.py",
+      "sha256": "a66f2c7e62c1184ceea5584f65f64bcd2602270633f63ada62d5e7db785cbaba",
+      "size_bytes": 341
+    },
+    {
+      "path": "tests/test_calculator.py",
+      "sha256": "cf50c2b6e09584858969d0d42f76975ab447ac9302227246898c0654865c6c93",
+      "size_bytes": 346
+    }
+  ],
+  "finished_at": "2026-10-08T17:43:19.743752+00:00",
+  "logs": [
+    {
+      "content": ".F..                                                                     [100%]\n=================================== FAILURES ===================================\n_____________________________ test_divides_numbers _____________________________\n\n    def test_divides_numbers():\n>       assert divide(8, 2) == 4\nE       assert 2.6666666666666665 == 4\nE        +  where 2.6666666666666665 = divide(8, 2)\n\ntests/test_calculator.py:9: AssertionError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-6kggoy82'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-hcvkcudu'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n-------------- generated xml file: /evidence/raw/pytest-junit.xml --------------\n=========================== short test summary info ============================\nFAILED tests/test_calculator.py::test_divides_numbers - assert 2.666666666666...\n1 failed, 3 passed, 2 warnings in 0.07s\n",
+      "id": "log-stdout",
+      "path": "docker-run.stdout.log",
+      "sha256": "f27fedba601dfca1f20015eccdf08792017006b7c5d5f2dd7ed8501ac6ee78b5",
+      "size_bytes": 1625,
+      "stream": "stdout"
+    },
+    {
+      "content": "",
+      "id": "log-stderr",
+      "path": "docker-run.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "stream": "stderr"
+    }
+  ],
+  "metadata": null,
+  "reproduction": [
+    "python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/regression_v2 --output-dir /workspace/pytest-evidence-runner/evidence/regression-v2-live",
+    "docker run --name pytest-evidence-run-7165a5526699 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/regression_v2:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/regression-v2-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml"
+  ],
+  "run_id": "run-7165a5526699",
+  "schema_version": "1.0",
+  "started_at": "2026-10-08T17:43:18.438931+00:00",
+  "stderr": "",
+  "stdout": ".F..                                                                     [100%]\n=================================== FAILURES ===================================\n_____________________________ test_divides_numbers _____________________________\n\n    def test_divides_numbers():\n>       assert divide(8, 2) == 4\nE       assert 2.6666666666666665 == 4\nE        +  where 2.6666666666666665 = divide(8, 2)\n\ntests/test_calculator.py:9: AssertionError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-6kggoy82'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /workspace/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/workspace/pytest-cache-files-hcvkcudu'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n-------------- generated xml file: /evidence/raw/pytest-junit.xml --------------\n=========================== short test summary info ============================\nFAILED tests/test_calculator.py::test_divides_numbers - assert 2.666666666666...\n1 failed, 3 passed, 2 warnings in 0.07s\n",
+  "summary": "Pytest completed in Docker with 1 failed and 0 errored tests.",
+  "test_cases": [
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.001,
+      "failure_ids": [],
+      "id": "test-64dc442821f9f724",
+      "name": "test_adds_numbers",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.001,
+      "failure_ids": [
+        "failure-0001"
+      ],
+      "id": "test-7fcf9195b9e086af",
+      "name": "test_divides_numbers",
+      "session_id": "session-pytest",
+      "status": "failed",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.0,
+      "failure_ids": [],
+      "id": "test-3c2ad2c09a2a32d1",
+      "name": "test_normalizes_email",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "classname": "tests.test_calculator",
+      "duration_seconds": 0.0,
+      "failure_ids": [],
+      "id": "test-0a9e36bce22309e3",
+      "name": "test_multiplies_numbers",
+      "session_id": "session-pytest",
+      "status": "passed",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "test_session": {
+    "command": [
+      "python",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "duration_seconds": 1.305,
+    "errors": 0,
+    "exit_code": 1,
+    "failed": 1,
+    "finished_at": "2026-10-08T17:43:19.743752+00:00",
+    "id": "session-pytest",
+    "passed": 3,
+    "skipped": 0,
+    "started_at": "2026-10-08T17:43:18.438931+00:00",
+    "status": "failed",
+    "test_case_ids": [
+      "test-64dc442821f9f724",
+      "test-7fcf9195b9e086af",
+      "test-3c2ad2c09a2a32d1",
+      "test-0a9e36bce22309e3"
+    ],
+    "total": 4
+  },
+  "verdict": "failed",
+  "workdir": "/workspace/pytest-evidence-runner/samples/regression_v2"
+}

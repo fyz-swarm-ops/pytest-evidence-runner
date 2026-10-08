@@ -1,0 +1,222 @@
+{
+  "baseline": {
+    "artifacts": [
+      {
+        "path": "raw/docker-command.json",
+        "sha256": "4fae4ebdf8a7639d1da4c96eb909c56fc666a9982901a24e6ff89953b50421a3"
+      },
+      {
+        "path": "raw/docker-config/config.json",
+        "sha256": "81bcbd3f950f2b31b87a64e8eca0de39db52feb0060d2bc631d7d794696604eb"
+      },
+      {
+        "path": "raw/docker-run.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "raw/docker-run.stdout.log",
+        "sha256": "6b3ead40de3206d13905e2e72ece435fcd3cea3eb8298b8b887ced9c6aabd85d"
+      },
+      {
+        "path": "raw/pytest-junit.xml",
+        "sha256": "f74c69b14c80729816014c183109c5936c307865cee343560270a236af54d4a3"
+      }
+    ],
+    "failure_kind": null,
+    "logs": [
+      {
+        "id": "log-stdout",
+        "path": "docker-run.stdout.log",
+        "sha256": "6b3ead40de3206d13905e2e72ece435fcd3cea3eb8298b8b887ced9c6aabd85d"
+      },
+      {
+        "id": "log-stderr",
+        "path": "docker-run.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "report_path": "evidence/regression-v1-live/report.json",
+    "run_id": "run-25f5aad19194",
+    "verdict": "passed"
+  },
+  "comparison_id": "cmp-1d8a6e569c59",
+  "created_at": "2026-10-08T17:43:26.908924+00:00",
+  "current": {
+    "artifacts": [
+      {
+        "path": "raw/docker-command.json",
+        "sha256": "5471ff0f50a8cc5ed56b22929a7fabfbfe5c15a2dfbd9222cf330f582624edd2"
+      },
+      {
+        "path": "raw/docker-config/config.json",
+        "sha256": "81bcbd3f950f2b31b87a64e8eca0de39db52feb0060d2bc631d7d794696604eb"
+      },
+      {
+        "path": "raw/docker-run.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "raw/docker-run.stdout.log",
+        "sha256": "f27fedba601dfca1f20015eccdf08792017006b7c5d5f2dd7ed8501ac6ee78b5"
+      },
+      {
+        "path": "raw/pytest-junit.xml",
+        "sha256": "6a2461532ed22f0cea7bec13707f1a1da58d40c7813420b595f7bac62da750b2"
+      }
+    ],
+    "failure_kind": "test_failure",
+    "logs": [
+      {
+        "id": "log-stdout",
+        "path": "docker-run.stdout.log",
+        "sha256": "f27fedba601dfca1f20015eccdf08792017006b7c5d5f2dd7ed8501ac6ee78b5"
+      },
+      {
+        "id": "log-stderr",
+        "path": "docker-run.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "report_path": "evidence/regression-v2-live/report.json",
+    "run_id": "run-7165a5526699",
+    "verdict": "failed"
+  },
+  "schema_version": "1.0",
+  "source_evidence": {
+    "baseline_report": "evidence/regression-v1-live/report.json",
+    "current_report": "evidence/regression-v2-live/report.json"
+  },
+  "summary": {
+    "baseline_verdict": "passed",
+    "counts": {
+      "added": 1,
+      "fixed": 0,
+      "other_change": 0,
+      "persistent_failure": 0,
+      "regression": 1,
+      "removed": 0,
+      "unchanged_passing": 2
+    },
+    "current_verdict": "failed",
+    "introduced_regressions": true,
+    "performance_counts": {
+      "faster": 1,
+      "not_comparable": 1,
+      "slower": 0,
+      "unchanged": 2
+    },
+    "verdict": "regression"
+  },
+  "thresholds": {
+    "absolute_seconds": 0.05,
+    "relative_percent": 25.0
+  },
+  "transitions": [
+    {
+      "baseline_source": null,
+      "baseline_status": null,
+      "classification": "added",
+      "current_source": {
+        "failure_ids": [],
+        "session_id": "session-pytest",
+        "stderr_present": false,
+        "stdout_present": false,
+        "test_case_id": "test-0a9e36bce22309e3"
+      },
+      "current_status": "passed",
+      "name": "tests.test_calculator.test_multiplies_numbers",
+      "performance": {
+        "baseline_seconds": null,
+        "classification": "not_comparable",
+        "current_seconds": null
+      },
+      "test_id": "test-0a9e36bce22309e3"
+    },
+    {
+      "baseline_source": {
+        "failure_ids": [],
+        "session_id": "session-pytest",
+        "stderr_present": false,
+        "stdout_present": false,
+        "test_case_id": "test-3c2ad2c09a2a32d1"
+      },
+      "baseline_status": "passed",
+      "classification": "unchanged_passing",
+      "current_source": {
+        "failure_ids": [],
+        "session_id": "session-pytest",
+        "stderr_present": false,
+        "stdout_present": false,
+        "test_case_id": "test-3c2ad2c09a2a32d1"
+      },
+      "current_status": "passed",
+      "name": "tests.test_calculator.test_normalizes_email",
+      "performance": {
+        "baseline_seconds": 0.001,
+        "classification": "faster",
+        "current_seconds": 0.0,
+        "delta_percent": -100.0,
+        "delta_seconds": -0.001
+      },
+      "test_id": "test-3c2ad2c09a2a32d1"
+    },
+    {
+      "baseline_source": {
+        "failure_ids": [],
+        "session_id": "session-pytest",
+        "stderr_present": false,
+        "stdout_present": false,
+        "test_case_id": "test-64dc442821f9f724"
+      },
+      "baseline_status": "passed",
+      "classification": "unchanged_passing",
+      "current_source": {
+        "failure_ids": [],
+        "session_id": "session-pytest",
+        "stderr_present": false,
+        "stdout_present": false,
+        "test_case_id": "test-64dc442821f9f724"
+      },
+      "current_status": "passed",
+      "name": "tests.test_calculator.test_adds_numbers",
+      "performance": {
+        "baseline_seconds": 0.001,
+        "classification": "unchanged",
+        "current_seconds": 0.001,
+        "delta_percent": 0.0,
+        "delta_seconds": 0.0
+      },
+      "test_id": "test-64dc442821f9f724"
+    },
+    {
+      "baseline_source": {
+        "failure_ids": [],
+        "session_id": "session-pytest",
+        "stderr_present": false,
+        "stdout_present": false,
+        "test_case_id": "test-7fcf9195b9e086af"
+      },
+      "baseline_status": "passed",
+      "classification": "regression",
+      "current_source": {
+        "failure_ids": [
+          "failure-0001"
+        ],
+        "session_id": "session-pytest",
+        "stderr_present": false,
+        "stdout_present": false,
+        "test_case_id": "test-7fcf9195b9e086af"
+      },
+      "current_status": "failed",
+      "name": "tests.test_calculator.test_divides_numbers",
+      "performance": {
+        "baseline_seconds": 0.001,
+        "classification": "unchanged",
+        "current_seconds": 0.001,
+        "delta_percent": 0.0,
+        "delta_seconds": 0.0
+      },
+      "test_id": "test-7fcf9195b9e086af"
+    }
+  ]
+}

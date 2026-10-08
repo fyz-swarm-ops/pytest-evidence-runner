@@ -1,0 +1,57 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 730 >>
+stream
+BT
+/F1 11 Tf
+50 770 Td
+(Evidence Comparison Report) Tj
+0 -16 Td
+(Verdict: regression) Tj
+0 -16 Td
+(Baseline: run-25f5aad19194 passed) Tj
+0 -16 Td
+(Current: run-7165a5526699 failed) Tj
+0 -16 Td
+(Regressions: 1  Fixes: 0  Persistent failures: 0) Tj
+0 -16 Td
+(Added: 1  Removed: 0  Unchanged passing: 2) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Detailed findings:) Tj
+0 -16 Td
+(- added: tests.test_calculator.test_multiplies_numbers \(None -> passed\)) Tj
+0 -16 Td
+(- unchanged_passing: tests.test_calculator.test_normalizes_email \(passed -> passed\)) Tj
+0 -16 Td
+(- unchanged_passing: tests.test_calculator.test_adds_numbers \(passed -> passed\)) Tj
+0 -16 Td
+(- regression: tests.test_calculator.test_divides_numbers \(passed -> failed\)) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer << /Size 6 /Root 1 0 R >>
+startxref
+1092
+%%EOF
