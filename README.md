@@ -2,7 +2,7 @@
 
 Pytest Evidence Runner runs Python tests in a bounded Docker container and produces evidence that an engineer can inspect, compare, and hand to a client. It is built for small QA, code-audit, and bug-reproduction engagements where the useful output is not just "tests failed," but what ran, where it ran, which tests failed, what logs were produced, and how to reproduce the result.
 
-Publication status: verified publication candidate. Docker execution, regression comparison, and report exports have been tested against a real local Docker daemon.
+Publication status: public verified release. Docker execution, regression comparison, and report exports have been tested against a real local Docker daemon.
 
 ## What It Does
 
@@ -300,6 +300,16 @@ The tool still executes test code from the target project. Do not run untrusted 
 - `timeout`: the container exceeded `--timeout-seconds`.
 - `runner_error`: pytest did not produce structured test results.
 - `test_failure`: pytest ran and reported failing/erroring tests.
+
+If Docker Desktop reports a credential-helper or base-image metadata error while
+building the local image, verify Docker can pull the base image directly:
+
+```bash
+docker pull python:3.12-slim
+```
+
+Then rerun the `pytest-evidence` command. This does not change the evidence
+output; it only confirms Docker can resolve the public Python base image.
 
 ## Local Non-Docker Mode
 
