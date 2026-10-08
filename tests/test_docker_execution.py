@@ -3,13 +3,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from pytest_evidence_runner.docker import DEFAULT_IMAGE, run_pytest_in_docker
+from pytest_evidence_runner.docker import _parse_junit, run_pytest_in_docker
 from pytest_evidence_runner.reporting import render_markdown, write_reports
 
 
@@ -23,24 +24,11 @@ def docker_available() -> bool:
     return completed.returncode == 0
 
 
-def local_image_available() -> bool:
-    if not docker_available():
-        return False
-    completed = subprocess.run(
-        ["docker", "image", "inspect", DEFAULT_IMAGE],
-        text=True,
-        capture_output=True,
-        check=False,
-        timeout=15,
-    )
-    return completed.returncode == 0
-
-
 class DockerExecutionTests(unittest.TestCase):
-    @unittest.skipUnless(local_image_available(), "Docker daemon or local pytest evidence image is not available")
+    @unittest.skipUnless(docker_available(), "Docker daemon is not available")
     def test_actual_docker_execution_captures_failed_pytest_cases(self):
         with tempfile.TemporaryDirectory() as tmp:
-            report = run_pytest_in_docker(SAMPLE, Path(tmp), timeout_seconds=180, build_image=False)
+            report = run_pytest_in_docker(SAMPLE, Path(tmp), timeout_seconds=180)
             self.assertEqual(report.execution_mode, "docker")
             self.assertEqual(report.verdict, "failed")
             self.assertEqual(report.failure_kind, "test_failure")
@@ -64,6 +52,18 @@ class DockerExecutionTests(unittest.TestCase):
                 report = run_pytest_in_docker(SAMPLE, Path(tmp), build_image=False)
         self.assertEqual(report.verdict, "error")
         self.assertEqual(report.failure_kind, "missing_docker")
+
+    def test_malformed_junit_is_returned_as_structured_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "pytest-junit.xml"
+            path.write_text("<testsuite><testcase>", encoding="utf-8")
+            started = finished = datetime.now(timezone.utc)
+            session, cases, failures = _parse_junit(path, ["python", "-m", "pytest"], 1, started, finished)
+        self.assertIsNotNone(session)
+        self.assertEqual(session.status, "error")
+        self.assertEqual(cases, [])
+        self.assertEqual(len(failures), 1)
+        self.assertEqual(failures[0].kind, "junit_parse_error")
 
 
 if __name__ == "__main__":

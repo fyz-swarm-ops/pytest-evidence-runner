@@ -295,7 +295,31 @@ def _parse_junit(
 ) -> tuple[TestSession | None, list[TestCaseRecord], list[FailureRecord]]:
     if not path.exists():
         return None, [], []
-    root = ET.parse(path).getroot()
+    try:
+        root = ET.parse(path).getroot()
+    except ET.ParseError as exc:
+        session = TestSession(
+            id="session-pytest",
+            command=command,
+            status="error",
+            exit_code=exit_code,
+            started_at=started.isoformat(),
+            finished_at=finished.isoformat(),
+            duration_seconds=round((finished - started).total_seconds(), 3),
+            total=0,
+            passed=0,
+            failed=0,
+            errors=1,
+            skipped=0,
+        )
+        failure = FailureRecord(
+            id="failure-0001",
+            test_case_id=None,
+            kind="junit_parse_error",
+            message=f"Could not parse pytest JUnit XML: {exc}",
+            details=path.read_text(encoding="utf-8", errors="replace")[:4000],
+        )
+        return session, [], [failure]
     suite = root.find("testsuite") if root.tag == "testsuites" else root
     if suite is None:
         return None, [], []

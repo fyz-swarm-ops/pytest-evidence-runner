@@ -111,6 +111,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command_name == "export":
         formats = {item.strip().lower() for item in args.format.split(",") if item.strip()}
+        if not formats:
+            parser.error("at least one export format is required")
         allowed = {"pdf", "html", "json", "md", "zip"}
         unknown = sorted(formats - allowed)
         if unknown:

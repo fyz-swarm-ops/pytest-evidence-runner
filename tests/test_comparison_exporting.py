@@ -4,11 +4,13 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from pytest_evidence_runner.comparison import Thresholds, compare_reports, save_baseline, validate_report
+from pytest_evidence_runner.cli import main
 from pytest_evidence_runner.exporting import export_comparison, export_run
 
 
@@ -160,6 +162,13 @@ class ComparisonExportingTests(unittest.TestCase):
             outputs = export_comparison(comp_dir, {"html", "pdf", "zip"}, Path(tmp) / "exports")
             self.assertTrue(any(item.name == "comparison-report.html" for item in outputs))
             self.assertTrue(any(item.name == "comparison-evidence-package.zip" for item in outputs))
+
+    def test_export_rejects_empty_format_list(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(SystemExit) as raised:
+                with mock.patch("sys.stderr"):
+                    main(["export", "--run", tmp, "--format", ",", "--output", tmp])
+        self.assertEqual(raised.exception.code, 2)
 
 
 if __name__ == "__main__":
