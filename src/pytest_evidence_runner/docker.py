@@ -103,6 +103,8 @@ def run_pytest_in_docker(
             "missing_docker",
             "Docker CLI is not available on PATH.",
             127,
+            output_dir=output_dir,
+            raw_cleanup_error=raw_cleanup_error,
         )
 
     info = _run(["docker", "info", "--format", "{{json .}}"], timeout=15, env=docker_env)
@@ -116,6 +118,8 @@ def run_pytest_in_docker(
             _clean(info.stderr) or _clean(info.stdout) or "Docker daemon is unavailable.",
             127,
             docker_version=docker_version,
+            output_dir=output_dir,
+            raw_cleanup_error=raw_cleanup_error,
         )
 
     build_id = None
@@ -147,6 +151,7 @@ def run_pytest_in_docker(
                     stdout=build.stdout,
                     stderr=build.stderr,
                     output_dir=output_dir,
+                    raw_cleanup_error=raw_cleanup_error,
                 )
 
     image_id = _image_id(image, docker_env)
@@ -479,8 +484,20 @@ def _infrastructure_report(
     stdout: str = "",
     stderr: str = "",
     output_dir: Path | None = None,
+    raw_cleanup_error: str | None = None,
 ) -> VerificationReport:
     finished = datetime.now(timezone.utc)
+    failures = []
+    if raw_cleanup_error:
+        failures.append(
+            FailureRecord(
+                id="failure-infra-raw-cleanup",
+                test_case_id=None,
+                kind="raw_cleanup_failed",
+                message="Could not fully clean previous raw evidence before the run.",
+                details=raw_cleanup_error,
+            )
+        )
     return VerificationReport(
         schema_version="1.0",
         run_id=run_id,
@@ -497,6 +514,7 @@ def _infrastructure_report(
         stderr=stderr,
         execution_mode="docker",
         artifacts=_artifact_hashes(output_dir) if output_dir else [],
+        failures=failures,
         container=ContainerEnvironment(
             id="not-created",
             image=DEFAULT_IMAGE,

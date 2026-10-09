@@ -51,6 +51,15 @@ class DockerExecutionTests(unittest.TestCase):
         self.assertEqual(report.verdict, "error")
         self.assertEqual(report.failure_kind, "missing_docker")
 
+    def test_raw_cleanup_failure_is_reported_on_early_infrastructure_failure(self):
+        with mock.patch("pytest_evidence_runner.docker._reset_raw_dir", return_value="stale.log: permission denied"):
+            with mock.patch("pytest_evidence_runner.docker._docker_version", return_value=None):
+                with tempfile.TemporaryDirectory() as tmp:
+                    report = run_pytest_in_docker(SAMPLE, Path(tmp), build_image=False)
+        self.assertEqual(report.failure_kind, "missing_docker")
+        self.assertTrue(any(failure.kind == "raw_cleanup_failed" for failure in report.failures))
+        self.assertIn("permission denied", report.failures[0].details)
+
     def test_docker_execution_preserves_existing_docker_configuration(self):
         seen_envs = []
 
