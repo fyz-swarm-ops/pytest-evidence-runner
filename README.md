@@ -26,7 +26,7 @@ python3 -m pip install -e .
 From a built wheel:
 
 ```bash
-python3 -m pip install dist/pytest_evidence_runner-0.1.3-py3-none-any.whl
+python3 -m pip install dist/pytest_evidence_runner-0.1.4-py3-none-any.whl
 ```
 
 Docker execution requires Docker to be installed and the daemon to be running.
@@ -138,9 +138,8 @@ Generated files are portable:
 - `*-evidence-package.zip`: reports plus raw evidence and `manifest.json` hashes.
 
 Checked-in files under `examples/`, `baselines/`, and `exports/` are sanitized
-example artifacts. Absolute paths inside those files use
-`/workspace/pytest-evidence-runner` so the examples are readable without exposing
-the machine where the original sample runs were produced.
+example artifacts. Example reports retain captured results with host paths
+normalized for portability.
 
 ## Report Contents
 
@@ -154,7 +153,6 @@ the machine where the original sample runs were produced.
 - reproduction commands.
 
 See `docs/evidence-schema.md` for schema relationships.
-See `docs/usage-fit.md` for suggested use cases and boundaries.
 
 ## Safety Model
 
@@ -182,6 +180,9 @@ projects without an appropriate machine or account boundary.
 - PDF export is intentionally simple and dependency-free. Use HTML/JSON/Markdown
   for detailed drilldown.
 - ZIP manifest hashes provide file integrity checks, not author signatures.
+- This tool is best suited for small, bounded Python verification runs and
+  review evidence. Use a fuller CI or orchestration platform for large suites,
+  distributed execution, secrets-heavy integration tests, or long-running jobs.
 
 ## Troubleshooting
 

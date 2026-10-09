@@ -1,20 +1,16 @@
 import json
 import subprocess
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
-
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
 
 from pytest_evidence_runner.docker import build_docker_command, shell_join
 from pytest_evidence_runner.reporting import render_markdown, write_reports
 from pytest_evidence_runner.runner import run_verification
 from pytest_evidence_runner.text import timeout_output
 
-
+ROOT = Path(__file__).resolve().parents[1]
 SAMPLE = ROOT / "samples" / "unittest_project"
 
 

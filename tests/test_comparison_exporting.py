@@ -1,17 +1,15 @@
 import json
-import sys
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
 from unittest import mock
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
-
-from pytest_evidence_runner.comparison import Thresholds, compare_reports, save_baseline, validate_report
 from pytest_evidence_runner.cli import main
+from pytest_evidence_runner.comparison import Thresholds, compare_reports, save_baseline, validate_report
 from pytest_evidence_runner.exporting import ZipValidationError, export_comparison, export_run, validate_evidence_zip
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def report(run_id, verdict, cases):

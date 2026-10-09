@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import shlex
+import shutil
 import subprocess
 import uuid
 import xml.etree.ElementTree as ET
@@ -82,7 +83,8 @@ def run_pytest_in_docker(
     output_dir = output_dir.resolve()
     raw_dir = output_dir / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
-    docker_env = _docker_env()
+    raw_cleanup_error = _reset_raw_dir(raw_dir)
+    docker_env = os.environ.copy()
     run_id = f"run-{uuid.uuid4().hex[:12]}"
     container_name = f"pytest-evidence-{run_id}"
     command = command or DEFAULT_PYTEST_COMMAND
@@ -103,10 +105,7 @@ def run_pytest_in_docker(
             127,
         )
 
-    try:
-        info = _run(["docker", "info", "--format", "{{json .}}"], timeout=15, env=docker_env)
-    except subprocess.SubprocessError as exc:
-        info = subprocess.CompletedProcess(["docker", "info"], 1, "", str(exc))
+    info = _run(["docker", "info", "--format", "{{json .}}"], timeout=15, env=docker_env)
     if info.returncode != 0 or "Cannot connect to the Docker daemon" in info.stderr:
         return _infrastructure_report(
             run_id,
@@ -147,6 +146,7 @@ def run_pytest_in_docker(
                     docker_version=docker_version,
                     stdout=build.stdout,
                     stderr=build.stderr,
+                    output_dir=output_dir,
                 )
 
     image_id = _image_id(image, docker_env)
@@ -174,7 +174,7 @@ def run_pytest_in_docker(
         stderr = timeout_output(exc.stderr)
         stderr = (stderr + "\n" if stderr else "") + f"Docker execution timed out after {timeout_seconds} seconds."
     finally:
-        _cleanup_container(container_name, docker_env)
+        cleanup = _cleanup_container(container_name, docker_env)
 
     (raw_dir / "docker-run.stdout.log").write_text(stdout, encoding="utf-8")
     (raw_dir / "docker-run.stderr.log").write_text(stderr, encoding="utf-8")
@@ -199,6 +199,34 @@ def run_pytest_in_docker(
         verdict = "error"
         failure_kind = "runner_error"
         summary = f"Docker pytest execution failed before test results were available, exit code {exit_code}."
+
+    infrastructure_failures: list[FailureRecord] = []
+    if raw_cleanup_error:
+        infrastructure_failures.append(
+            FailureRecord(
+                id="failure-infra-raw-cleanup",
+                test_case_id=None,
+                kind="raw_cleanup_failed",
+                message="Could not fully clean previous raw evidence before the run.",
+                details=raw_cleanup_error,
+            )
+        )
+    if cleanup.returncode != 0:
+        infrastructure_failures.append(
+            FailureRecord(
+                id="failure-infra-container-cleanup",
+                test_case_id=None,
+                kind="docker_cleanup_failed",
+                message="Docker container cleanup failed after execution.",
+                details=_clean(cleanup.stderr) or _clean(cleanup.stdout) or f"docker rm exited {cleanup.returncode}",
+            )
+        )
+    if infrastructure_failures and failure_kind is None:
+        verdict = "error"
+        failure_kind = "runner_error"
+        summary = "Pytest completed successfully, but Docker cleanup failed; captured pytest results are preserved."
+    elif infrastructure_failures:
+        summary = f"{summary} Additional infrastructure cleanup issue recorded."
 
     container = ContainerEnvironment(
         id=container_name,
@@ -231,7 +259,7 @@ def run_pytest_in_docker(
         container=container,
         test_session=session,
         test_cases=test_cases,
-        failures=failures,
+        failures=[*failures, *infrastructure_failures],
         logs=[
             _log_record("log-stdout", "stdout", raw_dir / "docker-run.stdout.log", stdout),
             _log_record("log-stderr", "stderr", raw_dir / "docker-run.stderr.log", stderr),
@@ -268,12 +296,8 @@ def _run(
         return subprocess.CompletedProcess(command, 1, "", str(exc))
 
 
-def _docker_env() -> dict[str, str]:
-    return os.environ.copy()
-
-
-def _cleanup_container(container_name: str, env: dict[str, str]) -> None:
-    _run(["docker", "rm", "-f", container_name], timeout=10, env=env)
+def _cleanup_container(container_name: str, env: dict[str, str]) -> subprocess.CompletedProcess[str]:
+    return _run(["docker", "rm", "-f", container_name], timeout=10, env=env)
 
 
 def _docker_version() -> str | None:
@@ -284,13 +308,23 @@ def _docker_version() -> str | None:
 
 
 def _image_id(image: str, env: dict[str, str] | None = None) -> str | None:
-    try:
-        completed = _run(["docker", "image", "inspect", image, "--format", "{{.Id}}"], timeout=10, env=env)
-    except subprocess.SubprocessError:
-        return None
+    completed = _run(["docker", "image", "inspect", image, "--format", "{{.Id}}"], timeout=10, env=env)
     if completed.returncode != 0:
         return None
     return completed.stdout.strip()
+
+
+def _reset_raw_dir(raw_dir: Path) -> str | None:
+    errors: list[str] = []
+    for path in raw_dir.iterdir():
+        try:
+            if path.is_dir():
+                shutil.rmtree(path)
+            else:
+                path.unlink()
+        except OSError as exc:
+            errors.append(f"{path.name}: {exc}")
+    return "\n".join(errors) if errors else None
 
 
 def _with_junitxml(command: list[str], junit_path: str) -> list[str]:
@@ -444,6 +478,7 @@ def _infrastructure_report(
     docker_version: str | None = None,
     stdout: str = "",
     stderr: str = "",
+    output_dir: Path | None = None,
 ) -> VerificationReport:
     finished = datetime.now(timezone.utc)
     return VerificationReport(
@@ -461,6 +496,7 @@ def _infrastructure_report(
         stdout=stdout,
         stderr=stderr,
         execution_mode="docker",
+        artifacts=_artifact_hashes(output_dir) if output_dir else [],
         container=ContainerEnvironment(
             id="not-created",
             image=DEFAULT_IMAGE,
