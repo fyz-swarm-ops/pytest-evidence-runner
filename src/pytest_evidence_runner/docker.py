@@ -21,6 +21,7 @@ from .models import (
     TestSession,
     VerificationReport,
 )
+from .text import timeout_output
 
 DEFAULT_IMAGE = "pytest-evidence-runner:local"
 DEFAULT_PYTEST_COMMAND = ["python", "-m", "pytest", "-q"]
@@ -166,8 +167,8 @@ def run_pytest_in_docker(
     except subprocess.TimeoutExpired as exc:
         timed_out = True
         exit_code = 124
-        stdout = _timeout_output(exc.stdout)
-        stderr = _timeout_output(exc.stderr)
+        stdout = timeout_output(exc.stdout)
+        stderr = timeout_output(exc.stderr)
         stderr = (stderr + "\n" if stderr else "") + f"Docker execution timed out after {timeout_seconds} seconds."
     finally:
         _run(["docker", "rm", "-f", container_name], timeout=10, env=docker_env)
@@ -241,20 +242,8 @@ def run_pytest_in_docker(
     return report
 
 
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
-
-
 def _docker_build_context():
     return as_file(files("pytest_evidence_runner").joinpath("docker_context"))
-
-
-def _timeout_output(value: str | bytes | None) -> str:
-    if value is None:
-        return ""
-    if isinstance(value, bytes):
-        return value.decode("utf-8", errors="replace")
-    return value
 
 
 def _run(

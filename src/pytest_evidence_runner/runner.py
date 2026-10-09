@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .hashing import hash_files
 from .models import RunMetadata, VerificationReport
+from .text import timeout_output
 
 
 def run_verification(
@@ -42,8 +43,8 @@ def run_verification(
         stderr = completed.stderr
     except subprocess.TimeoutExpired as exc:
         exit_code = 124
-        stdout = _timeout_output(exc.stdout)
-        stderr = _timeout_output(exc.stderr)
+        stdout = timeout_output(exc.stdout)
+        stderr = timeout_output(exc.stderr)
         stderr = (stderr + "\n" if stderr else "") + f"Command timed out after {timeout_seconds} seconds."
 
     finished = datetime.now(timezone.utc)
@@ -74,11 +75,3 @@ def run_verification(
             executable=sys.executable,
         ),
     )
-
-
-def _timeout_output(value: str | bytes | None) -> str:
-    if value is None:
-        return ""
-    if isinstance(value, bytes):
-        return value.decode("utf-8", errors="replace")
-    return value

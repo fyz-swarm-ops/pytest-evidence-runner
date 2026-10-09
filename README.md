@@ -26,7 +26,7 @@ python3 -m pip install -e .
 From a built wheel:
 
 ```bash
-python3 -m pip install dist/pytest_evidence_runner-0.1.1-py3-none-any.whl
+python3 -m pip install dist/pytest_evidence_runner-0.1.2-py3-none-any.whl
 ```
 
 Docker execution requires Docker to be installed and the daemon to be running.

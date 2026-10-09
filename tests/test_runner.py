@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from pytest_evidence_runner.docker import build_docker_command, shell_join
 from pytest_evidence_runner.reporting import render_markdown, write_reports
 from pytest_evidence_runner.runner import run_verification
+from pytest_evidence_runner.text import timeout_output
 
 
 SAMPLE = ROOT / "samples" / "unittest_project"
@@ -47,6 +48,10 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("partial stdout", report.stdout)
         self.assertIn("partial stderr", report.stderr)
         self.assertIn("Command timed out after 1 seconds.", report.stderr)
+
+    def test_timeout_output_decodes_bytes_with_replacement(self):
+        self.assertEqual(timeout_output(b"hello"), "hello")
+        self.assertIn("\ufffd", timeout_output(b"\xff"))
 
     def test_write_reports(self):
         report = run_verification(["python3", "-c", "print('ok')"], SAMPLE)
