@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import zipfile
 from datetime import datetime, timezone
@@ -9,6 +10,10 @@ from typing import Any
 
 from .comparison import load_report, render_comparison_markdown
 from .hashing import sha256_file
+
+
+class ZipValidationError(ValueError):
+    pass
 
 
 def export_run(source_dir: Path, formats: set[str], output_dir: Path) -> list[Path]:
@@ -333,6 +338,7 @@ def _write_zip(path: Path, source_dir: Path, report_paths: list[Path], kind: str
         manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         zf.write(manifest_path, "manifest.json")
     manifest_path.unlink(missing_ok=True)
+    validate_evidence_zip(path)
     return path
 
 
@@ -342,3 +348,29 @@ def _manifest_entry(path: Path, arcname: str) -> dict[str, Any]:
         "sha256": sha256_file(path),
         "size_bytes": path.stat().st_size,
     }
+
+
+def validate_evidence_zip(path: Path) -> None:
+    with zipfile.ZipFile(path) as zf:
+        try:
+            manifest = json.loads(zf.read("manifest.json"))
+        except KeyError as exc:
+            raise ZipValidationError(f"{path} is missing manifest.json") from exc
+        names = set(zf.namelist())
+        problems: list[str] = []
+        manifest_paths = {entry.get("path") for entry in manifest.get("files", [])}
+        extra_members = names - {"manifest.json"} - manifest_paths
+        for member in sorted(extra_members):
+            problems.append(f"{member}: missing from manifest")
+        for entry in manifest.get("files", []):
+            member = entry.get("path")
+            if member not in names:
+                problems.append(f"{member}: missing from ZIP")
+                continue
+            data = zf.read(member)
+            actual_sha = hashlib.sha256(data).hexdigest()
+            actual_size = len(data)
+            if actual_sha != entry.get("sha256") or actual_size != entry.get("size_bytes"):
+                problems.append(f"{member}: manifest hash/size mismatch")
+        if problems:
+            raise ZipValidationError(f"{path} failed integrity validation: {'; '.join(problems)}")

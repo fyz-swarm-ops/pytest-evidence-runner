@@ -45,5 +45,5 @@ tests/test_calculator.py:9: AssertionError
 
 ## Reproduce
 
-- `python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/regression_v2 --output-dir /workspace/pytest-evidence-runner/evidence/regression-v2-live`
-- `docker run --name pytest-evidence-run-7165a5526699 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/regression_v2:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/regression-v2-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml`
+- `python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/regression_v2 --output-dir /workspace/pytest-evidence-runner/evidence/regression-v2`
+- `docker run --name pytest-evidence-run-7165a5526699 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/regression_v2:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/regression-v2:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml`

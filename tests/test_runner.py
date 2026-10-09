@@ -49,6 +49,12 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("partial stderr", report.stderr)
         self.assertIn("Command timed out after 1 seconds.", report.stderr)
 
+    def test_voluntary_exit_124_is_not_classified_as_timeout(self):
+        report = run_verification(["python3", "-c", "raise SystemExit(124)"], SAMPLE, timeout_seconds=30)
+        self.assertEqual(report.exit_code, 124)
+        self.assertEqual(report.failure_kind, "runner_error")
+        self.assertIn("Command failed with exit code 124.", report.summary)
+
     def test_timeout_output_decodes_bytes_with_replacement(self):
         self.assertEqual(timeout_output(b"hello"), "hello")
         self.assertIn("\ufffd", timeout_output(b"\xff"))

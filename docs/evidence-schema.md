@@ -41,3 +41,6 @@ Comparison reports do not rerun tests. They compare saved execution reports and 
 ## Export Package Manifest
 
 ZIP exports include `manifest.json` with SHA-256 hashes and execution metadata. These hashes provide package integrity checks for copied files; they are not a cryptographic signature and do not prove who created the package.
+
+The test suite validates every checked-in evidence ZIP by comparing each
+manifest entry's `sha256` and `size_bytes` against the actual ZIP member bytes.

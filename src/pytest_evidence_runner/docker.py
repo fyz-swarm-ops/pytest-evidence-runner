@@ -82,7 +82,7 @@ def run_pytest_in_docker(
     output_dir = output_dir.resolve()
     raw_dir = output_dir / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
-    docker_env = _docker_env(raw_dir)
+    docker_env = _docker_env()
     run_id = f"run-{uuid.uuid4().hex[:12]}"
     container_name = f"pytest-evidence-{run_id}"
     command = command or DEFAULT_PYTEST_COMMAND
@@ -103,7 +103,10 @@ def run_pytest_in_docker(
             127,
         )
 
-    info = _run(["docker", "info", "--format", "{{json .}}"], timeout=15, env=docker_env)
+    try:
+        info = _run(["docker", "info", "--format", "{{json .}}"], timeout=15, env=docker_env)
+    except subprocess.SubprocessError as exc:
+        info = subprocess.CompletedProcess(["docker", "info"], 1, "", str(exc))
     if info.returncode != 0 or "Cannot connect to the Docker daemon" in info.stderr:
         return _infrastructure_report(
             run_id,
@@ -171,7 +174,7 @@ def run_pytest_in_docker(
         stderr = timeout_output(exc.stderr)
         stderr = (stderr + "\n" if stderr else "") + f"Docker execution timed out after {timeout_seconds} seconds."
     finally:
-        _run(["docker", "rm", "-f", container_name], timeout=10, env=docker_env)
+        _cleanup_container(container_name, docker_env)
 
     (raw_dir / "docker-run.stdout.log").write_text(stdout, encoding="utf-8")
     (raw_dir / "docker-run.stderr.log").write_text(stderr, encoding="utf-8")
@@ -252,32 +255,39 @@ def _run(
     timeout: int = 30,
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, cwd=cwd, text=True, capture_output=True, timeout=timeout, check=False, env=env)
+    try:
+        return subprocess.run(command, cwd=cwd, text=True, capture_output=True, timeout=timeout, check=False, env=env)
+    except FileNotFoundError as exc:
+        return subprocess.CompletedProcess(command, 127, "", str(exc))
+    except subprocess.TimeoutExpired as exc:
+        stdout = timeout_output(exc.stdout)
+        stderr = timeout_output(exc.stderr)
+        stderr = (stderr + "\n" if stderr else "") + f"Command timed out after {timeout} seconds."
+        return subprocess.CompletedProcess(command, 124, stdout, stderr)
+    except subprocess.SubprocessError as exc:
+        return subprocess.CompletedProcess(command, 1, "", str(exc))
 
 
-def _docker_env(raw_dir: Path) -> dict[str, str]:
-    env = os.environ.copy()
-    docker_config = raw_dir / "docker-config"
-    docker_config.mkdir(parents=True, exist_ok=True)
-    config_path = docker_config / "config.json"
-    if not config_path.exists():
-        config_path.write_text('{"auths":{}}\n', encoding="utf-8")
-    env["DOCKER_CONFIG"] = str(docker_config)
-    return env
+def _docker_env() -> dict[str, str]:
+    return os.environ.copy()
+
+
+def _cleanup_container(container_name: str, env: dict[str, str]) -> None:
+    _run(["docker", "rm", "-f", container_name], timeout=10, env=env)
 
 
 def _docker_version() -> str | None:
-    try:
-        completed = _run(["docker", "--version"], timeout=10)
-    except (FileNotFoundError, subprocess.SubprocessError):
-        return None
+    completed = _run(["docker", "--version"], timeout=10)
     if completed.returncode != 0:
         return None
     return completed.stdout.strip()
 
 
 def _image_id(image: str, env: dict[str, str] | None = None) -> str | None:
-    completed = _run(["docker", "image", "inspect", image, "--format", "{{.Id}}"], timeout=10, env=env)
+    try:
+        completed = _run(["docker", "image", "inspect", image, "--format", "{{.Id}}"], timeout=10, env=env)
+    except subprocess.SubprocessError:
+        return None
     if completed.returncode != 0:
         return None
     return completed.stdout.strip()

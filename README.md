@@ -26,7 +26,7 @@ python3 -m pip install -e .
 From a built wheel:
 
 ```bash
-python3 -m pip install dist/pytest_evidence_runner-0.1.2-py3-none-any.whl
+python3 -m pip install dist/pytest_evidence_runner-0.1.3-py3-none-any.whl
 ```
 
 Docker execution requires Docker to be installed and the daemon to be running.
@@ -72,6 +72,7 @@ The repository includes two Docker-runnable sample versions:
 
 - `samples/regression_v1`: all tests pass.
 - `samples/regression_v2`: one test intentionally regresses and one new test is added.
+- `samples/regression_v3_fixed`: the regression is fixed while the added test remains.
 
 Run both versions:
 
@@ -105,6 +106,9 @@ The comparison report classifies stable test-id transitions:
 - `added`: current run only
 - `removed`: baseline run only
 
+To show recovery after a fix, run `samples/regression_v3_fixed` and compare the
+`regression_v2` report against the fixed report.
+
 ## Export Reports
 
 Export one run:
@@ -133,6 +137,11 @@ Generated files are portable:
 - `*.md`: GitHub/PR-friendly reports.
 - `*-evidence-package.zip`: reports plus raw evidence and `manifest.json` hashes.
 
+Checked-in files under `examples/`, `baselines/`, and `exports/` are sanitized
+example artifacts. Absolute paths inside those files use
+`/workspace/pytest-evidence-runner` so the examples are readable without exposing
+the machine where the original sample runs were produced.
+
 ## Report Contents
 
 `report.json` is the canonical machine-readable file. Important fields include:
@@ -145,6 +154,7 @@ Generated files are portable:
 - reproduction commands.
 
 See `docs/evidence-schema.md` for schema relationships.
+See `docs/usage-fit.md` for suggested use cases and boundaries.
 
 ## Safety Model
 

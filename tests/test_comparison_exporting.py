@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from pytest_evidence_runner.comparison import Thresholds, compare_reports, save_baseline, validate_report
 from pytest_evidence_runner.cli import main
-from pytest_evidence_runner.exporting import export_comparison, export_run
+from pytest_evidence_runner.exporting import ZipValidationError, export_comparison, export_run, validate_evidence_zip
 
 
 def report(run_id, verdict, cases):
@@ -130,6 +130,7 @@ class ComparisonExportingTests(unittest.TestCase):
             with zipfile.ZipFile(zip_path) as zf:
                 self.assertIn("manifest.json", zf.namelist())
                 self.assertIn("evidence/report.json", zf.namelist())
+            validate_evidence_zip(zip_path)
 
     def test_comparison_export_zip(self):
         comparison = {
@@ -161,7 +162,22 @@ class ComparisonExportingTests(unittest.TestCase):
             (comp_dir / "comparison.json").write_text(json.dumps(comparison), encoding="utf-8")
             outputs = export_comparison(comp_dir, {"html", "pdf", "zip"}, Path(tmp) / "exports")
             self.assertTrue(any(item.name == "comparison-report.html" for item in outputs))
-            self.assertTrue(any(item.name == "comparison-evidence-package.zip" for item in outputs))
+            zip_path = next(item for item in outputs if item.name == "comparison-evidence-package.zip")
+            validate_evidence_zip(zip_path)
+
+    def test_tracked_evidence_zips_match_manifest_hashes_and_sizes(self):
+        for zip_path in sorted((ROOT / "exports").rglob("*.zip")):
+            with self.subTest(zip_path=zip_path):
+                validate_evidence_zip(zip_path)
+
+    def test_zip_validation_rejects_unmanifested_members(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            zip_path = Path(tmp) / "bad.zip"
+            with zipfile.ZipFile(zip_path, "w") as zf:
+                zf.writestr("manifest.json", json.dumps({"files": []}))
+                zf.writestr("extra.txt", "not tracked")
+            with self.assertRaisesRegex(ZipValidationError, "missing from manifest"):
+                validate_evidence_zip(zip_path)
 
     def test_export_rejects_empty_format_list(self):
         with tempfile.TemporaryDirectory() as tmp:

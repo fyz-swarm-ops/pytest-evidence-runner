@@ -27,7 +27,7 @@
 - Privileged: `False`
 - Resources: `cpus=1, memory=512m, pids_limit=256, tmpfs=/tmp:rw,nosuid,nodev,size=128m`
 - Project mount: `/workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro`
-- Evidence mount: `/workspace/pytest-evidence-runner/evidence/docker-passing-subset-live:/evidence:rw`
+- Evidence mount: `/workspace/pytest-evidence-runner/evidence/docker-passing-subset:/evidence:rw`
 
 ## Test Session
 
@@ -84,5 +84,5 @@
 
 ## Reproduce
 
-- `python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/pytest_project --output-dir /workspace/pytest-evidence-runner/evidence/docker-passing-subset-live`
-- `docker run --name pytest-evidence-run-5df1fc44dd86 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/docker-passing-subset-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q tests/test_calculator.py::test_add_passes tests/test_calculator.py::test_divide_passes --junitxml=/evidence/raw/pytest-junit.xml`
+- `python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/pytest_project --output-dir /workspace/pytest-evidence-runner/evidence/docker-passing-subset`
+- `docker run --name pytest-evidence-run-5df1fc44dd86 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/docker-passing-subset:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q tests/test_calculator.py::test_add_passes tests/test_calculator.py::test_divide_passes --junitxml=/evidence/raw/pytest-junit.xml`

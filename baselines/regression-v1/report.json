@@ -35,7 +35,7 @@
   "container": {
     "docker_build_id": null,
     "docker_version": "Docker version 27.4.0, build bde2b89",
-    "evidence_mount": "/workspace/pytest-evidence-runner/evidence/regression-v1-live:/evidence:rw",
+    "evidence_mount": "/workspace/pytest-evidence-runner/evidence/regression-v1:/evidence:rw",
     "id": "pytest-evidence-run-25f5aad19194",
     "image": "pytest-evidence-runner:local",
     "image_id": "sha256:b6d5c479c8801982463040fd0be20262d6838417becc3950dc56c4a782e56569",
@@ -92,8 +92,8 @@
   ],
   "metadata": null,
   "reproduction": [
-    "python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/regression_v1 --output-dir /workspace/pytest-evidence-runner/evidence/regression-v1-live",
-    "docker run --name pytest-evidence-run-25f5aad19194 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/regression_v1:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/regression-v1-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml"
+    "python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/regression_v1 --output-dir /workspace/pytest-evidence-runner/evidence/regression-v1",
+    "docker run --name pytest-evidence-run-25f5aad19194 --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/regression_v1:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/regression-v1:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml"
   ],
   "run_id": "run-25f5aad19194",
   "schema_version": "1.0",

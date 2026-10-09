@@ -29,6 +29,7 @@ def run_verification(
     started = datetime.now(timezone.utc)
     run_id = f"run-{uuid.uuid4().hex[:12]}"
     hashes = hash_files(workdir, hash_patterns or [])
+    timed_out = False
     try:
         completed = subprocess.run(
             command,
@@ -42,6 +43,7 @@ def run_verification(
         stdout = completed.stdout
         stderr = completed.stderr
     except subprocess.TimeoutExpired as exc:
+        timed_out = True
         exit_code = 124
         stdout = timeout_output(exc.stdout)
         stderr = timeout_output(exc.stderr)
@@ -50,8 +52,16 @@ def run_verification(
     finished = datetime.now(timezone.utc)
     duration = round((finished - started).total_seconds(), 3)
     verdict = "passed" if exit_code == 0 else "failed"
-    failure_kind = None if exit_code == 0 else ("timeout" if exit_code == 124 else "runner_error")
-    summary = "Command completed successfully." if exit_code == 0 else f"Command failed with exit code {exit_code}."
+    failure_kind = None if exit_code == 0 else ("timeout" if timed_out else "runner_error")
+    summary = (
+        "Command completed successfully."
+        if exit_code == 0
+        else (
+            f"Command timed out after {timeout_seconds} seconds."
+            if timed_out
+            else f"Command failed with exit code {exit_code}."
+        )
+    )
 
     return VerificationReport(
         schema_version="1.0",

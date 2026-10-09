@@ -40,7 +40,7 @@
   "container": {
     "docker_build_id": "408d42c52a5b",
     "docker_version": "Docker version 27.4.0, build bde2b89",
-    "evidence_mount": "/workspace/pytest-evidence-runner/evidence/docker-sample-live:/evidence:rw",
+    "evidence_mount": "/workspace/pytest-evidence-runner/evidence/docker-sample:/evidence:rw",
     "id": "pytest-evidence-run-4eeb9e7e021b",
     "image": "pytest-evidence-runner:local",
     "image_id": "sha256:eef206ef77923cb49c991246881e5d1e89b12533cf35daa7da7752273ec14c12",
@@ -105,8 +105,8 @@
   ],
   "metadata": null,
   "reproduction": [
-    "python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/pytest_project --output-dir /workspace/pytest-evidence-runner/evidence/docker-sample-live",
-    "docker run --name pytest-evidence-run-4eeb9e7e021b --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/docker-sample-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml"
+    "python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/pytest_project --output-dir /workspace/pytest-evidence-runner/evidence/docker-sample",
+    "docker run --name pytest-evidence-run-4eeb9e7e021b --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/docker-sample:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml"
   ],
   "run_id": "run-4eeb9e7e021b",
   "schema_version": "1.0",

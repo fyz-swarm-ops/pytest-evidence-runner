@@ -6,8 +6,8 @@
 
 ## Runs
 
-- Baseline: `run-25f5aad19194` `passed` from `evidence/regression-v1-live/report.json`
-- Current: `run-7165a5526699` `failed` from `evidence/regression-v2-live/report.json`
+- Baseline: `run-25f5aad19194` `passed` from `evidence/regression-v1/report.json`
+- Current: `run-7165a5526699` `failed` from `evidence/regression-v2/report.json`
 
 ## Transition Counts
 

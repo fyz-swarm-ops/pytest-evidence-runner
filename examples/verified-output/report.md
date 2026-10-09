@@ -27,7 +27,7 @@
 - Privileged: `False`
 - Resources: `cpus=1, memory=512m, pids_limit=256, tmpfs=/tmp:rw,nosuid,nodev,size=128m`
 - Project mount: `/workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro`
-- Evidence mount: `/workspace/pytest-evidence-runner/evidence/docker-sample-live:/evidence:rw`
+- Evidence mount: `/workspace/pytest-evidence-runner/evidence/docker-sample:/evidence:rw`
 
 ## Test Session
 
@@ -112,5 +112,5 @@ FAILED tests/test_calculator.py::test_intentional_failure_for_evidence - asse...
 
 ## Reproduce
 
-- `python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/pytest_project --output-dir /workspace/pytest-evidence-runner/evidence/docker-sample-live`
-- `docker run --name pytest-evidence-run-4eeb9e7e021b --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/docker-sample-live:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml`
+- `python -m pytest_evidence_runner run --docker --project /workspace/pytest-evidence-runner/samples/pytest_project --output-dir /workspace/pytest-evidence-runner/evidence/docker-sample`
+- `docker run --name pytest-evidence-run-4eeb9e7e021b --rm --network none --cpus 1 --memory 512m --pids-limit 256 --tmpfs /tmp:rw,nosuid,nodev,size=128m -v /workspace/pytest-evidence-runner/samples/pytest_project:/workspace:ro -v /workspace/pytest-evidence-runner/evidence/docker-sample:/evidence:rw -w /workspace --entrypoint python pytest-evidence-runner:local -m pytest -q --junitxml=/evidence/raw/pytest-junit.xml`

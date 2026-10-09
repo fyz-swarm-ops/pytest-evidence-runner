@@ -35,7 +35,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "report_path": "evidence/regression-v1-live/report.json",
+    "report_path": "evidence/regression-v1/report.json",
     "run_id": "run-25f5aad19194",
     "verdict": "passed"
   },
@@ -77,14 +77,14 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "report_path": "evidence/regression-v2-live/report.json",
+    "report_path": "evidence/regression-v2/report.json",
     "run_id": "run-7165a5526699",
     "verdict": "failed"
   },
   "schema_version": "1.0",
   "source_evidence": {
-    "baseline_report": "evidence/regression-v1-live/report.json",
-    "current_report": "evidence/regression-v2-live/report.json"
+    "baseline_report": "evidence/regression-v1/report.json",
+    "current_report": "evidence/regression-v2/report.json"
   },
   "summary": {
     "baseline_verdict": "passed",
