@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import html
 import json
-import shutil
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -10,7 +9,6 @@ from typing import Any
 
 from .comparison import load_report, render_comparison_markdown
 from .hashing import sha256_file
-from .reporting import render_markdown
 
 
 def export_run(source_dir: Path, formats: set[str], output_dir: Path) -> list[Path]:
@@ -31,7 +29,9 @@ def export_comparison(source_dir: Path, formats: set[str], output_dir: Path) -> 
     stem = "comparison-report"
     outputs = _write_common(comparison, "comparison", stem, formats, output_dir)
     if "zip" in formats:
-        outputs.append(_write_zip(output_dir / "comparison-evidence-package.zip", source_dir, outputs, "comparison", comparison))
+        outputs.append(
+            _write_zip(output_dir / "comparison-evidence-package.zip", source_dir, outputs, "comparison", comparison)
+        )
     return outputs
 
 
@@ -70,21 +70,32 @@ def _markdown(data: dict[str, Any], kind: str) -> str:
 
 def _run_markdown(data: dict[str, Any]) -> str:
     session = data.get("test_session") or {}
-    cases = "\n".join(
-        f"- `{item.get('id')}` `{item.get('status')}` `{item.get('classname')}.{item.get('name')}` ({item.get('duration_seconds')}s)"
-        for item in data.get("test_cases", [])
-    ) or "- No structured test cases captured."
-    failures = "\n\n".join(
-        f"### `{item.get('id')}` `{item.get('kind')}`\n\n"
-        f"Message: {item.get('message') or '(none)'}\n\n"
-        f"```text\n{item.get('details') or ''}\n```"
-        for item in data.get("failures", [])
-    ) or "- No structured failures captured."
-    artifacts = "\n".join(
-        f"- `{item.get('path')}` `{item.get('sha256')}` ({item.get('size_bytes')} bytes)"
-        for item in data.get("artifacts", [])
-    ) or "- No artifacts captured."
-    reproduction = "\n".join(f"- `{item}`" for item in data.get("reproduction", [])) or "- No reproduction command captured."
+    cases = (
+        "\n".join(
+            f"- `{item.get('id')}` `{item.get('status')}` `{item.get('classname')}.{item.get('name')}` ({item.get('duration_seconds')}s)"
+            for item in data.get("test_cases", [])
+        )
+        or "- No structured test cases captured."
+    )
+    failures = (
+        "\n\n".join(
+            f"### `{item.get('id')}` `{item.get('kind')}`\n\n"
+            f"Message: {item.get('message') or '(none)'}\n\n"
+            f"```text\n{item.get('details') or ''}\n```"
+            for item in data.get("failures", [])
+        )
+        or "- No structured failures captured."
+    )
+    artifacts = (
+        "\n".join(
+            f"- `{item.get('path')}` `{item.get('sha256')}` ({item.get('size_bytes')} bytes)"
+            for item in data.get("artifacts", [])
+        )
+        or "- No artifacts captured."
+    )
+    reproduction = (
+        "\n".join(f"- `{item}`" for item in data.get("reproduction", [])) or "- No reproduction command captured."
+    )
     return f"""# Verification Report
 
 **Verdict:** {data.get("verdict")}
@@ -147,35 +158,41 @@ summary {{ cursor: pointer; font-weight: 650; }}
 
 
 def _run_html(data: dict[str, Any]) -> str:
-    cases = "\n".join(
-        f"<details><summary><code>{html.escape(case['id'])}</code> {html.escape(case.get('status', ''))} {html.escape(case.get('classname', ''))}.{html.escape(case.get('name', ''))}</summary>"
-        f"<p>Duration: {case.get('duration_seconds')} seconds</p>"
-        f"<p>Failures: {html.escape(', '.join(case.get('failure_ids', [])) or 'none')}</p>"
-        f"<pre>{html.escape(case.get('stdout', '') or '')}</pre>"
-        f"</details>"
-        for case in data.get("test_cases", [])
-    ) or "<p>No structured test cases captured.</p>"
-    failures = "\n".join(
-        f"<details open><summary><code>{html.escape(item['id'])}</code> {html.escape(item.get('kind', ''))}</summary>"
-        f"<p>{html.escape(item.get('message', '') or '(no message)')}</p>"
-        f"<pre>{html.escape(item.get('details', '') or '')}</pre></details>"
-        for item in data.get("failures", [])
-    ) or "<p>No structured failures captured.</p>"
+    cases = (
+        "\n".join(
+            f"<details><summary><code>{html.escape(case['id'])}</code> {html.escape(case.get('status', ''))} {html.escape(case.get('classname', ''))}.{html.escape(case.get('name', ''))}</summary>"
+            f"<p>Duration: {case.get('duration_seconds')} seconds</p>"
+            f"<p>Failures: {html.escape(', '.join(case.get('failure_ids', [])) or 'none')}</p>"
+            f"<pre>{html.escape(case.get('stdout', '') or '')}</pre>"
+            f"</details>"
+            for case in data.get("test_cases", [])
+        )
+        or "<p>No structured test cases captured.</p>"
+    )
+    failures = (
+        "\n".join(
+            f"<details open><summary><code>{html.escape(item['id'])}</code> {html.escape(item.get('kind', ''))}</summary>"
+            f"<p>{html.escape(item.get('message', '') or '(no message)')}</p>"
+            f"<pre>{html.escape(item.get('details', '') or '')}</pre></details>"
+            for item in data.get("failures", [])
+        )
+        or "<p>No structured failures captured.</p>"
+    )
     session = data.get("test_session") or {}
     return f"""<h1>Verification Report</h1>
-<p class="verdict">Verdict: <span class="{_verdict_class(data.get('verdict'))}">{html.escape(str(data.get('verdict')))}</span></p>
-<p>{html.escape(str(data.get('summary', '')))}</p>
+<p class="verdict">Verdict: <span class="{_verdict_class(data.get("verdict"))}">{html.escape(str(data.get("verdict")))}</span></p>
+<p>{html.escape(str(data.get("summary", "")))}</p>
 <h2>Executive Summary</h2>
-<table><tr><th>Run id</th><td>{html.escape(str(data.get('run_id')))}</td></tr>
-<tr><th>Execution mode</th><td>{html.escape(str(data.get('execution_mode')))}</td></tr>
-<tr><th>Exit code</th><td>{html.escape(str(data.get('exit_code')))}</td></tr>
-<tr><th>Tests</th><td>{session.get('total', 0)} total, {session.get('passed', 0)} passed, {session.get('failed', 0)} failed, {session.get('errors', 0)} errors</td></tr></table>
+<table><tr><th>Run id</th><td>{html.escape(str(data.get("run_id")))}</td></tr>
+<tr><th>Execution mode</th><td>{html.escape(str(data.get("execution_mode")))}</td></tr>
+<tr><th>Exit code</th><td>{html.escape(str(data.get("exit_code")))}</td></tr>
+<tr><th>Tests</th><td>{session.get("total", 0)} total, {session.get("passed", 0)} passed, {session.get("failed", 0)} failed, {session.get("errors", 0)} errors</td></tr></table>
 <h2>Test Cases</h2>
 {cases}
 <h2>Failures</h2>
 {failures}
 <h2>Evidence References</h2>
-<pre>{html.escape(json.dumps({'logs': data.get('logs', []), 'artifacts': data.get('artifacts', []), 'reproduction': data.get('reproduction', [])}, indent=2))}</pre>"""
+<pre>{html.escape(json.dumps({"logs": data.get("logs", []), "artifacts": data.get("artifacts", []), "reproduction": data.get("reproduction", [])}, indent=2))}</pre>"""
 
 
 def _comparison_html(data: dict[str, Any]) -> str:
@@ -194,13 +211,13 @@ def _comparison_html(data: dict[str, Any]) -> str:
         for item in data.get("transitions", [])
     )
     return f"""<h1>Evidence Comparison Report</h1>
-<p class="verdict">Verdict: <span class="{_verdict_class(summary.get('verdict'))}">{html.escape(summary.get('verdict', ''))}</span></p>
+<p class="verdict">Verdict: <span class="{_verdict_class(summary.get("verdict"))}">{html.escape(summary.get("verdict", ""))}</span></p>
 <h2>Executive Summary</h2>
-<table><tr><th>Baseline</th><td>{html.escape(str(data['baseline']['run_id']))} ({html.escape(str(summary['baseline_verdict']))})</td></tr>
-<tr><th>Current</th><td>{html.escape(str(data['current']['run_id']))} ({html.escape(str(summary['current_verdict']))})</td></tr>
-<tr><th>Regressions</th><td>{summary['counts']['regression']}</td></tr>
-<tr><th>Fixes</th><td>{summary['counts']['fixed']}</td></tr>
-<tr><th>Persistent failures</th><td>{summary['counts']['persistent_failure']}</td></tr></table>
+<table><tr><th>Baseline</th><td>{html.escape(str(data["baseline"]["run_id"]))} ({html.escape(str(summary["baseline_verdict"]))})</td></tr>
+<tr><th>Current</th><td>{html.escape(str(data["current"]["run_id"]))} ({html.escape(str(summary["current_verdict"]))})</td></tr>
+<tr><th>Regressions</th><td>{summary["counts"]["regression"]}</td></tr>
+<tr><th>Fixes</th><td>{summary["counts"]["fixed"]}</td></tr>
+<tr><th>Persistent failures</th><td>{summary["counts"]["persistent_failure"]}</td></tr></table>
 <h2>Transitions</h2>
 <table><tr><th>Test id</th><th>Test</th><th>Baseline</th><th>Current</th><th>Transition</th><th>Performance</th></tr>{rows}</table>
 <h2>Drilldown</h2>
@@ -226,7 +243,9 @@ def _pdf_lines(data: dict[str, Any], kind: str) -> list[str]:
             "Detailed findings:",
         ]
         for item in data.get("transitions", [])[:35]:
-            lines.append(f"- {item['classification']}: {item['name']} ({item['baseline_status']} -> {item['current_status']})")
+            lines.append(
+                f"- {item['classification']}: {item['name']} ({item['baseline_status']} -> {item['current_status']})"
+            )
         return lines
     session = data.get("test_session") or {}
     lines = [
@@ -240,7 +259,9 @@ def _pdf_lines(data: dict[str, Any], kind: str) -> list[str]:
         "Detailed findings:",
     ]
     for item in data.get("test_cases", [])[:35]:
-        lines.append(f"- {item.get('status')}: {item.get('classname')}.{item.get('name')} ({item.get('duration_seconds')}s)")
+        lines.append(
+            f"- {item.get('status')}: {item.get('classname')}.{item.get('name')} ({item.get('duration_seconds')}s)"
+        )
     return lines
 
 

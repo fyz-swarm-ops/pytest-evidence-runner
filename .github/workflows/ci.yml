@@ -16,7 +16,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install package
-        run: python -m pip install -e .
+        run: python -m pip install -e ".[dev]"
+      - name: Lint
+        run: python -m ruff check .
+      - name: Format check
+        run: python -m ruff format --check .
       - name: Run unit tests
         run: python -m unittest discover -s tests
       - name: Verify sample report generation
@@ -47,4 +51,29 @@ jobs:
           assert data["execution_mode"] == "docker"
           assert data["failure_kind"] == "test_failure"
           assert data["test_session"]["failed"] == 1
+          PY
+
+  wheel-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build wheel
+        run: |
+          python -m pip install build
+          python -m build --wheel
+      - name: Install wheel outside checkout
+        run: |
+          python -m venv /tmp/pytest-evidence-wheel
+          /tmp/pytest-evidence-wheel/bin/python -m pip install dist/*.whl
+      - name: Verify installed CLI and packaged Docker context
+        run: |
+          cd /tmp
+          /tmp/pytest-evidence-wheel/bin/pytest-evidence --help
+          /tmp/pytest-evidence-wheel/bin/python - <<'PY'
+          from pytest_evidence_runner.docker import _docker_build_context
+          with _docker_build_context() as context:
+              assert (context / "Dockerfile").is_file(), context
           PY

@@ -10,7 +10,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from pytest_evidence_runner.docker import _parse_junit, run_pytest_in_docker
+from pytest_evidence_runner.docker import _docker_build_context, _parse_junit, run_pytest_in_docker
 from pytest_evidence_runner.reporting import render_markdown, write_reports
 
 
@@ -52,6 +52,28 @@ class DockerExecutionTests(unittest.TestCase):
                 report = run_pytest_in_docker(SAMPLE, Path(tmp), build_image=False)
         self.assertEqual(report.verdict, "error")
         self.assertEqual(report.failure_kind, "missing_docker")
+
+    def test_default_dockerfile_is_packaged(self):
+        with _docker_build_context() as context:
+            self.assertTrue((context / "Dockerfile").exists())
+
+    def test_docker_timeout_preserves_partial_stdout_and_stderr(self):
+        timeout = subprocess.TimeoutExpired(["docker"], timeout=1, output=b"partial stdout", stderr=b"partial stderr")
+        with mock.patch("pytest_evidence_runner.docker._docker_version", return_value="Docker version test"):
+            with mock.patch("pytest_evidence_runner.docker._image_id", return_value="sha256:test"):
+                with mock.patch("pytest_evidence_runner.docker._run") as fake_run:
+                    fake_run.return_value = subprocess.CompletedProcess(["docker"], 0, "ok", "")
+                    with mock.patch("pytest_evidence_runner.docker.subprocess.run", side_effect=timeout):
+                        with tempfile.TemporaryDirectory() as tmp:
+                            report = run_pytest_in_docker(SAMPLE, Path(tmp), timeout_seconds=1, build_image=False)
+                            stdout_log = (Path(tmp) / "raw" / "docker-run.stdout.log").read_text(encoding="utf-8")
+                            stderr_log = (Path(tmp) / "raw" / "docker-run.stderr.log").read_text(encoding="utf-8")
+        self.assertEqual(report.failure_kind, "timeout")
+        self.assertIn("partial stdout", report.stdout)
+        self.assertIn("partial stderr", report.stderr)
+        self.assertIn("Docker execution timed out after 1 seconds.", report.stderr)
+        self.assertIn("partial stdout", stdout_log)
+        self.assertIn("partial stderr", stderr_log)
 
     def test_malformed_junit_is_returned_as_structured_evidence(self):
         with tempfile.TemporaryDirectory() as tmp:

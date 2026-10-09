@@ -17,9 +17,7 @@ def write_reports(report: VerificationReport, output_dir: Path) -> tuple[Path, P
 
 def render_markdown(report: VerificationReport) -> str:
     command = " ".join(report.command)
-    hashes = "\n".join(
-        f"- `{item.path}` `{item.sha256}` ({item.size_bytes} bytes)" for item in report.file_hashes
-    )
+    hashes = "\n".join(f"- `{item.path}` `{item.sha256}` ({item.size_bytes} bytes)" for item in report.file_hashes)
     if not hashes:
         hashes = "- No file hashes requested."
 
@@ -141,6 +139,4 @@ def _render_failures(report: VerificationReport) -> str:
 def _render_artifacts(report: VerificationReport) -> str:
     if not report.artifacts:
         return "- No raw artifacts captured."
-    return "\n".join(
-        f"- `{item.path}` `{item.sha256}` ({item.size_bytes} bytes)" for item in report.artifacts
-    )
+    return "\n".join(f"- `{item.path}` `{item.sha256}` ({item.size_bytes} bytes)" for item in report.artifacts)

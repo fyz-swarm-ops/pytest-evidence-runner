@@ -109,8 +109,7 @@ def build_comparison(
     current_cases = {item["id"]: item for item in current.get("test_cases", [])}
     all_ids = sorted(set(baseline_cases) | set(current_cases))
     transitions = [
-        _transition(test_id, baseline_cases.get(test_id), current_cases.get(test_id), thresholds)
-        for test_id in all_ids
+        _transition(test_id, baseline_cases.get(test_id), current_cases.get(test_id), thresholds) for test_id in all_ids
     ]
     counts: dict[str, int] = {
         "regression": 0,
@@ -128,7 +127,9 @@ def build_comparison(
         performance_counts[perf] = performance_counts.get(perf, 0) + 1
 
     introduced_regressions = counts["regression"] > 0
-    comparison_id = f"cmp-{_short_hash(str(baseline_path) + str(current_path) + datetime.now(timezone.utc).isoformat())}"
+    comparison_id = (
+        f"cmp-{_short_hash(str(baseline_path) + str(current_path) + datetime.now(timezone.utc).isoformat())}"
+    )
     return {
         "schema_version": "1.0",
         "comparison_id": comparison_id,
@@ -307,10 +308,7 @@ def _run_ref(report: dict[str, Any], path: Path) -> dict[str, Any]:
             {"id": item.get("id"), "path": item.get("path"), "sha256": item.get("sha256")}
             for item in report.get("logs", [])
         ],
-        "artifacts": [
-            {"path": item.get("path"), "sha256": item.get("sha256")}
-            for item in report.get("artifacts", [])
-        ],
+        "artifacts": [{"path": item.get("path"), "sha256": item.get("sha256")} for item in report.get("artifacts", [])],
     }
 
 
@@ -324,7 +322,7 @@ def _duration_label(item: dict[str, Any]) -> str:
     perf = item["performance"]
     if perf["classification"] == "not_comparable":
         return "n/a"
-    return f'{perf["delta_seconds"]:+.6f}s ({perf["classification"]})'
+    return f"{perf['delta_seconds']:+.6f}s ({perf['classification']})"
 
 
 def _transition_detail(item: dict[str, Any]) -> str:

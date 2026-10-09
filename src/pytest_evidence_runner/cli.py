@@ -117,7 +117,11 @@ def main(argv: list[str] | None = None) -> int:
         unknown = sorted(formats - allowed)
         if unknown:
             parser.error(f"unknown export format(s): {', '.join(unknown)}")
-        outputs = export_run(args.run, formats, args.output) if args.run else export_comparison(args.comparison, formats, args.output)
+        outputs = (
+            export_run(args.run, formats, args.output)
+            if args.run
+            else export_comparison(args.comparison, formats, args.output)
+        )
         for path in outputs:
             print(f"wrote {path}")
         return 0

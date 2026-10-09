@@ -42,8 +42,8 @@ def run_verification(
         stderr = completed.stderr
     except subprocess.TimeoutExpired as exc:
         exit_code = 124
-        stdout = exc.stdout if isinstance(exc.stdout, str) else ""
-        stderr = exc.stderr if isinstance(exc.stderr, str) else ""
+        stdout = _timeout_output(exc.stdout)
+        stderr = _timeout_output(exc.stderr)
         stderr = (stderr + "\n" if stderr else "") + f"Command timed out after {timeout_seconds} seconds."
 
     finished = datetime.now(timezone.utc)
@@ -74,3 +74,11 @@ def run_verification(
             executable=sys.executable,
         ),
     )
+
+
+def _timeout_output(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value

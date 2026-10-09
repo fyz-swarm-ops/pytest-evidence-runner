@@ -8,6 +8,7 @@ import subprocess
 import uuid
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
+from importlib.resources import as_file, files
 from pathlib import Path
 
 from .hashing import hash_files
@@ -116,28 +117,33 @@ def run_pytest_in_docker(
 
     build_id = None
     if build_image and image == DEFAULT_IMAGE:
-        build = _run(["docker", "build", "-t", image, "."], cwd=_repo_root(), timeout=timeout_seconds, env=docker_env)
-        build_id = _short_sha(build.stdout + build.stderr)
-        (raw_dir / "docker-build.stdout.log").write_text(build.stdout, encoding="utf-8")
-        (raw_dir / "docker-build.stderr.log").write_text(build.stderr, encoding="utf-8")
-        if build.returncode != 0:
-            failure_kind = (
-                "docker_daemon_unavailable"
-                if "Cannot connect to the Docker daemon" in build.stderr
-                else "docker_build_failed"
+        with _docker_build_context() as build_context:
+            build = _run(
+                ["docker", "build", "-t", image, "."], cwd=build_context, timeout=timeout_seconds, env=docker_env
             )
-            return _infrastructure_report(
-                run_id,
-                started,
-                project_path,
-                command,
-                failure_kind,
-                "Docker daemon is unavailable." if failure_kind == "docker_daemon_unavailable" else "Docker image build failed.",
-                build.returncode,
-                docker_version=docker_version,
-                stdout=build.stdout,
-                stderr=build.stderr,
-            )
+            build_id = _short_sha(build.stdout + build.stderr)
+            (raw_dir / "docker-build.stdout.log").write_text(build.stdout, encoding="utf-8")
+            (raw_dir / "docker-build.stderr.log").write_text(build.stderr, encoding="utf-8")
+            if build.returncode != 0:
+                failure_kind = (
+                    "docker_daemon_unavailable"
+                    if "Cannot connect to the Docker daemon" in build.stderr
+                    else "docker_build_failed"
+                )
+                return _infrastructure_report(
+                    run_id,
+                    started,
+                    project_path,
+                    command,
+                    failure_kind,
+                    "Docker daemon is unavailable."
+                    if failure_kind == "docker_daemon_unavailable"
+                    else "Docker image build failed.",
+                    build.returncode,
+                    docker_version=docker_version,
+                    stdout=build.stdout,
+                    stderr=build.stderr,
+                )
 
     image_id = _image_id(image, docker_env)
     junit_path = raw_dir / "pytest-junit.xml"
@@ -160,8 +166,8 @@ def run_pytest_in_docker(
     except subprocess.TimeoutExpired as exc:
         timed_out = True
         exit_code = 124
-        stdout = exc.stdout if isinstance(exc.stdout, str) else ""
-        stderr = exc.stderr if isinstance(exc.stderr, str) else ""
+        stdout = _timeout_output(exc.stdout)
+        stderr = _timeout_output(exc.stderr)
         stderr = (stderr + "\n" if stderr else "") + f"Docker execution timed out after {timeout_seconds} seconds."
     finally:
         _run(["docker", "rm", "-f", container_name], timeout=10, env=docker_env)
@@ -237,6 +243,18 @@ def run_pytest_in_docker(
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
+
+
+def _docker_build_context():
+    return as_file(files("pytest_evidence_runner").joinpath("docker_context"))
+
+
+def _timeout_output(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
 
 
 def _run(

@@ -1,8 +1,10 @@
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
@@ -35,6 +37,16 @@ class RunnerTests(unittest.TestCase):
         report = run_verification(["python3", "-c", "raise SystemExit(7)"], SAMPLE)
         self.assertEqual(report.verdict, "failed")
         self.assertEqual(report.exit_code, 7)
+
+    def test_timeout_preserves_partial_stdout_and_stderr(self):
+        timeout = subprocess.TimeoutExpired(["python3"], timeout=1, output=b"partial stdout", stderr=b"partial stderr")
+        with mock.patch("pytest_evidence_runner.runner.subprocess.run", side_effect=timeout):
+            report = run_verification(["python3", "-c", "print('slow')"], SAMPLE, timeout_seconds=1)
+        self.assertEqual(report.exit_code, 124)
+        self.assertEqual(report.failure_kind, "timeout")
+        self.assertIn("partial stdout", report.stdout)
+        self.assertIn("partial stderr", report.stderr)
+        self.assertIn("Command timed out after 1 seconds.", report.stderr)
 
     def test_write_reports(self):
         report = run_verification(["python3", "-c", "print('ok')"], SAMPLE)
